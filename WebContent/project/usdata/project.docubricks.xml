@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xml" href="docubricks.xsl"?>
+<docubricks>
+  <physical_part id="2134661607">
+    <description>Nitrile Rubber O-Ring Cord, 3.5mm Diam.</description>
+    <supplier>RS components UK</supplier>
+    <supplier_part_num>683-0778</supplier_part_num>
+    <manufacturer_part_num>CD 3.5MM NBR70</manufacturer_part_num>
+    <url>http://uk.rs-online.com/web/p/o-ring-cords/6830778/</url>
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="930112488">
+    <description>Multi Contact 4 mm Test Lead, 32A, 600V, Red, 2m Lead Length
+
+Requirements: Min. 100V DC save flexible cable and babana plug, can be purchased seperately</description>
+    <supplier>RS components</supplier>
+    <supplier_part_num>786-5413</supplier_part_num>
+    <manufacturer_part_num>66.9408-200-22, Multi Contact</manufacturer_part_num>
+    <url>http://uk.rs-online.com/web/p/4-mm-connector-test-leads/7865413/?origin=PSF_437292|alt</url>
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="652534416">
+    <description>Multi Contact 4 mm Test Lead, 32A, 600V, Black, 2m Lead Length
+
+Requirements: Min. 100V DC save flexible cable and babana plug, can be purchased seperately</description>
+    <supplier>RS components</supplier>
+    <supplier_part_num>786-5365</supplier_part_num>
+    <manufacturer_part_num>66.9407-200-21,  Multi Contact</manufacturer_part_num>
+    <url>http://uk.rs-online.com/web/p/4-mm-connector-test-leads/7865365/?origin=PSF_437292|acc</url>
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="843980724">
+    <description>5kV 4mm panel socket XHB-5000 Red, screw on</description>
+    <supplier>RS components</supplier>
+    <supplier_part_num>162-684</supplier_part_num>
+    <manufacturer_part_num>66.9427-22, Multi Contact</manufacturer_part_num>
+    <url>http://uk.rs-online.com/web/p/4-mm-test-plugs-sockets/0162684/</url>
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="2085553993">
+    <description>5kV 4mm panel socket XHB-5000 Black, screw on</description>
+    <supplier>RS components</supplier>
+    <supplier_part_num>162-707</supplier_part_num>
+    <manufacturer_part_num>66.9427-21, Multi Contact</manufacturer_part_num>
+    <url>http://uk.rs-online.com/web/p/4-mm-test-plugs-sockets/0162707/</url>
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="196820931">
+    <description>The acrylic weldling solvent.
+Any other commercial or self made solution would also work. Use one that you have experimence with and that is save to handle in your workshop / laboratory enviroment.
+
+Here, I did not use the commercial adhesive, but a self made a mixture of 10% acetic acid and 90% dichloroethane, that I used in a fumehood.</description>
+    <supplier>RS components</supplier>
+    <supplier_part_num>0144-399</supplier_part_num>
+    <manufacturer_part_num>0144-399, RS Pro</manufacturer_part_num>
+    <url>http://uk.rs-online.com/web/p/acrylic-adhesives/0144399/</url>
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="948080094">
+    <description>Multilam uninsulated plug w/M3 stud, 4mm</description>
+    <supplier>RS components</supplier>
+    <supplier_part_num>262-2028</supplier_part_num>
+    <manufacturer_part_num>22.1055, Multi contact</manufacturer_part_num>
+    <url>http://uk.rs-online.com/web/p/4-mm-test-plugs-sockets/2622028/?searchTerm=2622028&amp;relevancy-data=636F3D3126696E3D4931384E525353746F636B4E756D6265724D504E266C753D656E266D6D3D6D61746368616C6C26706D3D5E5C647B367D247C5E5C647B377D247C5E5C647B31307D2426706F3D313426736E3D592673743D52535F53544F434B5F4E554D4245522677633D4E4F4E45267573743D3236323230323826</url>
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="578128417">
+    <description>normal M3 nut, stainless steel</description>
+    <supplier />
+    <supplier_part_num />
+    <manufacturer_part_num />
+    <url />
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="1851233702">
+    <description>Cathod wire ca. 0.3mm
+
+Material Choices:
+
+Ideally, platinum wire or wire that is coated in platinum should be used as durable electrode materials.
+
+However, as a cheap alternative stainless steel can be used and will occasionally have to be ireplaced when in use. Here:
+TMC Wire - 317L Grade Stainless Steel Wire - 0.3mm (300 Micron - 29 AWG)
+
+In a similar way, graphite sheets have been used by some.</description>
+    <supplier>Crazy Wire Company Ltd</supplier>
+    <supplier_part_num>TMC Wire - 317L Grade Stainless Steel Wire - 0.3mm</supplier_part_num>
+    <manufacturer_part_num>TMC Wire - 317L Grade Stainless Steel Wire - 0.3mm</manufacturer_part_num>
+    <url>http://wireandstuff.co.uk/products/317L-Grade-Stainless-Steel-Wire---0.3mm--300-Micron---29-AWG----10-Metre-Spool-252.html#SID=17</url>
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="1085478627">
+    <description>AC/DC Power Supply 15 V, POWERPAX  PTD-15016V, Euro, UK, US, 90 VAC, 264 VAC, 24 W, 15 V, 1.6 A</description>
+    <supplier>onecall farnell</supplier>
+    <supplier_part_num>PW02743</supplier_part_num>
+    <manufacturer_part_num>PTD-15016V, POWERPAX</manufacturer_part_num>
+    <url>http://onecall.farnell.com/powerpax/ptd-15016v/international-ac-dc-psu-15v-1/dp/PW02743?ost=PW02743&amp;selectedCategoryId=&amp;categoryName=All+Categories&amp;categoryNameResp=All%2BCategories</url>
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="396759611">
+    <description>Electrophoresis power supply kit with assembled and tested PCB</description>
+    <supplier>IO Rodeo</supplier>
+    <supplier_part_num>Electrophoresis power supply kit</supplier_part_num>
+    <manufacturer_part_num>Electrophoresis power supply kit</manufacturer_part_num>
+    <url>http://www.iorodeo.com/content/electrophoresis-power-supply-kit</url>
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="588249096">
+    <description>Lasercut parts thin acylic (here 3mm):
+- Basin_side left (outer, same shape as the (right) mirrored basin side)
+- (here 1x) Bar_for_tank_extension
+- 2x Tray_side_right (outer)
+- Basin_middle_to_be_bent
+- Lid (Lid with optional engraving. Free choise of sheet thickness.)
+- And two small stripes used to measure the distances from the edge to bend the acylic middle sheet of the tank and the ends of the lid.</description>
+    <supplier>RS Components</supplier>
+    <supplier_part_num>434-295</supplier_part_num>
+    <manufacturer_part_num>434-295, RS Pro</manufacturer_part_num>
+    <url>http://uk.rs-online.com/web/p/solid-plastic-sheets/0434295/</url>
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media>
+      <file url="././././usdata/Open_Parametric_Gel_Elecrophoresis_Box_-_Drawing_thin_parts_lasercut.pdf" />
+      <file url="././././usdata/Inkscape SVG Thin Parts.svg" />
+      <file url="././././usdata/Inkscape SVG Thin Parts.dxf" />
+    </media>
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="708668033">
+    <description>Lasercut parts thick acylic (here 5mm):
+- 2x Tray_side_right (inner)
+- Tray_centre (Can be made out of UV transparent material if to be used on a transilluminator)
+- Tray_bench
+- Basin_side (left, inner)
+- Mirrored_basin_side (right, single walled) (The two basin sides are not the same! This is just one layer of the thick sheet size)
+- (here 2x) Bar_for_tank_extension
+- 4x Handle_bar_single (from front, two are glued together to form handle on each side)
+- 4x Tray_side_left_postL (from front, al the post to hold the gel tray seal sheet in place are the same)</description>
+    <supplier>RS Components</supplier>
+    <supplier_part_num>824-525</supplier_part_num>
+    <manufacturer_part_num>824-525, RS Pro</manufacturer_part_num>
+    <url>http://uk.rs-online.com/web/p/solid-plastic-sheets/0824525/</url>
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media>
+      <file url="././././usdata/Open_Parametric_Gel_Elecrophoresis_Box_-_Drawing_thick_parts_lasercut.pdf" />
+      <file url="././././usdata/Inkscape SVG Thick Parts.svg" />
+      <file url="././././usdata/Inkscape SVG Thick Parts.dxf" />
+      <file url="././././usdata/Open Parametric Gel Elecrophoresis Box - Gel_comb.stl" />
+    </media>
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="259705850">
+    <description>Electrode wire holder,
+3D printed, ideally ABS, 100% infil reccommended:
+Electrode_wire_holder</description>
+    <supplier>RS components</supplier>
+    <supplier_part_num>832-0311</supplier_part_num>
+    <manufacturer_part_num>832-0311, RS Pro</manufacturer_part_num>
+    <url>http://uk.rs-online.com/web/p/3d-printing-materials/8320311/</url>
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media>
+      <file url="././././usdata/Electrode_wire_holder.png" />
+      <file url="././././usdata/Open Parametric Gel Elecrophoresis Box - Electrode_wire_holder.stl" />
+    </media>
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="1473633991">
+    <description>Gel tray seal sheet,
+3D printed, ideally ABS, 100% infil reccommended:
+Tray_seal_sheet</description>
+    <supplier />
+    <supplier_part_num />
+    <manufacturer_part_num />
+    <url />
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media>
+      <file url="././././usdata/Gel_tray_sealing.png" />
+      <file url="././././usdata/Open Parametric Gel Elecrophoresis Box - Tray_seal_sheet_mirrored.stl" />
+    </media>
+    <manufacturing_instruction />
+  </physical_part>
+  <physical_part id="1774985532">
+    <description>Gel comb,
+3D printed, ideally ABS, 100% infil reccommended:
+Tray_seal_sheet
+Gel_comb (remember to print one comb per gel slot and perhaps spares)</description>
+    <supplier />
+    <supplier_part_num />
+    <manufacturer_part_num />
+    <url />
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media>
+      <file url="././././usdata/Gel_tray.png" />
+    </media>
+    <manufacturing_instruction />
+  </physical_part>
+  <brick id="107883242">
+    <name>Parametric Gel Electrophoresis System</name>
+    <abstract>The first open source parametric gel box - make any size and from any anrylic sheet with your laser cutter</abstract>
+    <long_description>Gel electrophoresis systems are one of the most common tools of scientists working with DNA in experiments. Yet existing commercial solutions are expensive and non-customizable. Gel electrophoresis systems do not follow many standards so with the open source parametric system presented here, there is nothing that stops you from building a gel system in the size that most suits your needs - for a fraction of the prize of a commercial system. This gel system was designed to be of research grade quality, safe, easy to build and easy to modify. This documentation contains construction files for building a small gel electrophoresis system with a gel size of 100x70mm and two comb slots. 
+This documentation also explains how to customise the online design around 10 main and 7 minor parameters (without installing any software) and how to easily download and make the modified gel box. The virtual gel box automatically adapts to the parameter changes. Besides changing parameters like the gel size and number of comb slots and comb teeth, you can also change the sheet thickness of the acrylic sheet you use for laser cutting, to account for regional availabilities and differences in manufacturing tolerances. The electrophoresis system described here also adapts the buffer volume of the tank according to the gel size you choose. This works well from very small to very large gel sizes up to 500 square centimetres, for larger industrial sized gels you might need less buffer than estimated by my algorithm.</long_description>
+    <notes>In order to make this design, you need to use local manufacturing services (like 3dhubs.com or fabhub.io, etc.) or have access to a 3D printer for a few small parts, to a laser cutter for the majority of the parts, and ideally to an acrylic bender (essentially a hot wire that you can place the readily cut acrylic sheets of the lid and the central sheet of the tank over and a metal 90 degree corner to cool it down on). If you do not have an acrylic bender, minor design changes will have to be made to the online design (here: https://cad.onshape.com/documents/e4f597c3b1914cf5bfadca8f/w/f8f2e4efef44420eb2762421/e/b790df069b8a4e8c9418084b ) or to the lines before laser cutting: separating the central sheet of the tank into 3 smaller pieces and removing overlapping parts of the lid design. Contact me if this is an issue for you.</notes>
+    <license>CC-BY 3.0</license>
+    <media>
+      <file url="././usdata/gelbox.JPG" />
+      <file url="././usdata/gelbox_with_psu.JPG" />
+      <file url="././usdata/lase_cutting.jpg" />
+    </media>
+    <assembly_instruction>
+      <step>
+        <description>To operate this gel box, I used the IO rodeo open source electrophoresis power converter box and a power adapter.</description>
+        <media>
+          <file url="./usdata/0-gelbox_with_psu.JPG" />
+        </media>
+      </step>
+    </assembly_instruction>
+    <author id="260344617" />
+    <function id="1505077840">
+      <description />
+      <designator />
+      <quantity />
+      <implementation type="brick" id="377179279" />
+      <implementation type="brick" id="228339621" />
+      <implementation type="brick" id="1165932122" />
+      <implementation type="brick" id="18404920" />
+    </function>
+  </brick>
+  <brick id="377179279">
+    <name>Customisation along inbuilt parameters</name>
+    <abstract />
+    <long_description>This is a guide of how to adapt the gel electrophoresis system to your prefered size and available materials, using the parameters (also called variables) defined in the online CAD platform OnShape. You should always at least update the actual acylic sheet thickness in the design before laser cutting.</long_description>
+    <notes />
+    <license />
+    <media />
+    <assembly_instruction>
+      <step>
+        <description>Visit the page for this design on the online CAD platform OnShape, and create your own copy of the project:
+https://cad.onshape.com/documents/e4f597c3b1914cf5bfadca8f/w/f8f2e4efef44420eb2762421/e/b790df069b8a4e8c9418084b
+Now you can start adopting the many variables and see the design change - all variables can be found at the top of the "Features" list. Below, you find more details on the parameters and export procedure. In this instruction stepp there is also an excell spreadsheet attacehd with the parameters used for this small gel box and comments. When looking at the design, you have to be aware that several parts (gel tray left and right (see images), the tank extension bar as well as the left side of the tank and the handle bars) are made up of two arylic sheets that will be glued together later. But don't worry: these are all listed correctly in the drawings. Once you make the changes, you can update the drawings and they will contain all the individual laser cutter parts you need.</description>
+        <media>
+          <file url="././././usdata/variables.png" />
+          <file url="././././usdata/Settings_for_small_gel_box.xlsx" />
+          <file url="././././usdata/Example_parts_from_two_sheets (1).png" />
+          <file url="././././usdata/Example_parts_from_two_sheets (2).png" />
+        </media>
+      </step>
+      <step>
+        <description>First choose the most essential parameters for gel-electrphoresis: Your preferred gel size and the size of the gel pockets (= design of the teeth of the gel comb), into which you later pipette the DNA suspension.
+All varables here are given in mm, but depending on your OnShape acount settings, and whether you prefer mm (metric) or inches (imperial), you might want to change the default settings applied to your account.
+Choose your gel size with the vairables:
+#gel_width and #gel_length (usually between 70x70 to 200x200mm in any rectangular shape).
+Choose your comb teeth design:
+#comb_teeth_thickness (usually between 1 and 2mm) and #comb_teeth_width.</description>
+        <media>
+          <file url="././././usdata/0-Gel_tray.png" />
+          <file url="././././usdata/comb_thickness_and_width.png" />
+        </media>
+      </step>
+      <step>
+        <description>Second, decide on how may slots for the (always optional) placement of combs you would like in the gel tray.
+For these setting, you need to change both the variable #gel_slot_nr and the number inside the sketch.
+Let's start. First, just have a look at the sketch inside the onshape design. It is called "S tray_side_gel_slots". Do not change the slot distances - this is automatically calculated to distribute the slots equally along the gel length.
+Now change the number of gel slots (to position combs) that you would like to have by setting the variable #gel_slot_nr. Here, we increase the number from 2 to 3.</description>
+        <media>
+          <file url="././././usdata/nr_of_slots (1).png" />
+          <file url="././././usdata/nr_of_slots (2).png" />
+        </media>
+      </step>
+      <step>
+        <description>If you go back to the sketch (S tray_side_gel_slots), you will see that the slot distances automatically changed but there are still only two slots. Now change the number in the sketch to the same number that you entered in the variable to attain all slotts.</description>
+        <media>
+          <file url="././././usdata/nr_of_slots (3).png" />
+          <file url="././././usdata/nr_of_slots (4).png" />
+          <file url="././././usdata/nr_of_slots (5).png" />
+        </media>
+      </step>
+      <step>
+        <description>Changing the number of teeth in the gel comb (= the number of gel slots to fill in DNA), works in the same way: Change the number in the variable #comb_teeth_nr and then set the number in the sketch "S gel_comb, printed" to the same value. 
+The number of teeth are equally distributed across the gel width, use your preferences and the visiul appearende of the virtual gel-box as guidance for the optimal number. Also re-adjust #comb_teeth_width if neccessary.</description>
+        <media>
+          <file url="././././usdata/gel_teeth (1).png" />
+          <file url="././././usdata/gel_teeth (2).png" />
+        </media>
+      </step>
+      <step>
+        <description>Have a look at the overall design - for this you can also switch to the assembly tab at the bottom of the page. If you think the gel tray is becoming too long or too short in order to automatically accomodate the neccessary buffer volume, you can change the height of the buffer chamber (the seperated space below the gel tray). Change the variable #buffer_camber_depth to a different multiple of your acylic sheet thicknesses, and see if you like the result better. Careful: You will have to lasercut this nr of slices, but the drawings will not accomodate for this change automatically.</description>
+        <media>
+          <file url="././././usdata/tank_extension (1).png" />
+          <file url="././././usdata/tank_extension (2).png" />
+        </media>
+      </step>
+      <step>
+        <description>Now the exact acylic sheet thickness: At this stage you can estimate how much acylic material you will need. Decide on a nominal value for the acrylic sheets thicknesses in variables #sheet1 (thin, here 3mm) and #sheet2 (thick, here 5mm), then swith to the drawings in the bottom tabs in OnShape and update the drawings to get an idea about the area of acylic sheet of each type needed. Once you got hold of the actual material, measure the actual thickness of the sheets and update the varaibles in the design again before doing any laser cutting.</description>
+        <media>
+          <file url="././././usdata/sheet_thickness.jpg" />
+          <file url="././././usdata/update_drawing.png" />
+        </media>
+      </step>
+      <step>
+        <description>Most of the follwing parameter changes are rather technical. Feel free to skip to the data export steps from here.
+
+Gel thickness and comb placement:
+If you want to change the thickness of the gel (now 8mm) you are using, you will have to think about a total of three variables: #gel_tray_height, #gel_slot_height and #gel_height_offset.
+While #gel_tray_height (17mm) determines the overall height of the gel tray (without the lift-out extensions on the corner), #gel_slot_height (5mm) determines how deep the combs sit in the tray. The variable #gel_height_offset. (here 4mm) determines how much below the onset of the comb the gel should start: Gel thickness = gel_tray_height - gel_slot_height - gel_height_offset.
+The gel volume is calulated this way (more later) and the hot gel solution should be filled until it reaches up to the small comb-psitioning stop at each side of the comb.
+
+You can also change the thickness of the top bar of the comb and the width of the slits in the gel tray, by changing the variable #gel_slot_width (5.2mm).</description>
+        <media>
+          <file url="././././usdata/tray_height.png" />
+          <file url="././././usdata/slot_height.png" />
+          <file url="././././usdata/gel_height_offest.png" />
+        </media>
+      </step>
+      <step>
+        <description>If you want to use a rubber with a slightly different diameter than mine (3.5mm), then you can midify the variable #rubber_diameter. This might only work well for relatively small diviations.</description>
+        <media>
+          <file url="././././usdata/seal_width (1).png" />
+          <file url="././././usdata/seal_width (2).png" />
+        </media>
+      </step>
+      <step>
+        <description>You can also change the height of the sides of the lid after bent on an acylic bender with the variable #lid_height. At the moment it is 25mm, which does not get in the way of reaching the handle even for relatively small gel sizes and buffer chamber depths.</description>
+        <media>
+          <file url="././././usdata/lid_height (1).png" />
+          <file url="././././usdata/lid_height (2).png" />
+        </media>
+      </step>
+      <step>
+        <description>Not happy with the distribution of gel tray slots or comb teeth? There is a little inbuild offset for both that can be changed:
+#gel_slot_offset (currently 3mm) and #comb_teeth_offset (also 3mm).</description>
+        <media>
+          <file url="././././usdata/gel_slot_offset.png" />
+          <file url="././././usdata/comb_offset.png" />
+        </media>
+      </step>
+      <step>
+        <description>Exporting the design files for manufacturing:
+All these changes were made in the "part studio" of the OnShape project. All the parts for manufacturing are in three other tabs:
+-  The 3D printed parts (three of them, two needed each) are in the tab "Parts 3D printing" (formally a part assembly). Right click onto the three parts to export them as STL files.
+- The laser cut parts are on two drawing tabs - one for each sheet thickness. Visit both of them and update the drawings with the yellow circle symbol at the top. If you doubt that the scaling of some parts is till correct, you can double click on the shapes and correct the scaling factor if this should ever be neccessary. Then right click on the drawing tab itself to export the sheets as PDF.
+For our laser cutter and also for importing files into the open source software Inkscape, the export formate DXF did not work. I imported the PDF into Inkscape first to delete frame and comments, before exporting it to DXF from there. Most lasercutters also except the PDF formate.</description>
+        <media>
+          <file url="././././usdata/3D_printing.png" />
+          <file url="././././usdata/3D printing (3).png" />
+          <file url="././././usdata/0-update_drawing.png" />
+          <file url="././././usdata/Laser_cutting.png" />
+          <file url="././././usdata/Laser cutting (2).png" />
+        </media>
+      </step>
+      <step>
+        <description>Finally, when you want to use the gel electrophoresis system, you will need to know the needed volume of gel-solution and buffer. This is graphically displayed in the graph next to the box in the part studio. Click on the edges of the graph to have the length of the graph displayed in the corner. This value is the needed volume for the gel (left) and the buffer to be added into the tank (reight) in ml. Here 56ml and about 260ml.</description>
+        <media>
+          <file url="././././usdata/volumes (1).png" />
+          <file url="././././usdata/volumes (2).png" />
+        </media>
+      </step>
+      <step>
+        <description>Lasercut them all!</description>
+        <media>
+          <file url="././usdata/0-lase_cutting.jpg" />
+        </media>
+      </step>
+    </assembly_instruction>
+  </brick>
+  <brick id="228339621">
+    <name>Gel tray</name>
+    <abstract>The tay to cast the gel, lift in and out of the tank and to image the gel in.</abstract>
+    <long_description>It consitsts of the acylic tray and the gel-combs that create the gel-pockets to insert DNA suspensions after the gel has cooled down. The gel should be cast up to the beginning of the alignment teeth at the sides of the gel combs. The required volume for the gel is 56ml.</long_description>
+    <notes />
+    <license />
+    <media>
+      <file url="././usdata/gel_tray_combs.JPG" />
+      <file url="./usdata/0-volumes (2).png" />
+    </media>
+    <assembly_instruction>
+      <step>
+        <description>Glue together the sides of the tray, then glue the sides onto the sides of the central gel tray sheet and lastly glue on the side posts, that allow you to use the tray-sealing and to lift the wet tray out of the tank. To glue the acylic together, apply the acylic welding solution carefully to the touching surfaces of the acylic parts for example with a syringe. Capillary action will distribute the solvent (second image symbolises the gluing process). Allign the parts well! The correct spacing is important for the sealing to work. Optionally, you can use tape to hold the parts into place. Only remove the acrylic sheet protective foil from the surfaces that you need to glue on. It will keep the rest clean (especially the under side). I also placed the pieces on tooth picks, so that they don't stick to the table.</description>
+        <media>
+          <file url="././usdata/IMG_8420.JPG" />
+          <file url="././usdata/IMG_8438.JPG" />
+          <file url="././usdata/IMG_8463.JPG" />
+          <file url="././usdata/gel_tray.JPG" />
+        </media>
+      </step>
+      <step>
+        <description>Print and insert the combs and move to the next documentation brick.</description>
+        <media>
+          <file url="././usdata/0-gel_tray_combs.JPG" />
+        </media>
+      </step>
+    </assembly_instruction>
+    <function id="1743679370">
+      <description>Lasercut parts</description>
+      <designator />
+      <quantity />
+      <implementation type="physical_part" id="588249096" />
+      <implementation type="physical_part" id="708668033" />
+    </function>
+    <function id="996244488">
+      <description>Acylic glue</description>
+      <designator />
+      <quantity />
+      <implementation type="physical_part" id="196820931" />
+    </function>
+    <function id="187554344">
+      <description>3D printed gel combs</description>
+      <designator />
+      <quantity />
+      <implementation type="physical_part" id="1774985532" />
+    </function>
+  </brick>
+  <brick id="1165932122">
+    <name>Gel tray sealing</name>
+    <abstract />
+    <long_description />
+    <notes />
+    <license />
+    <media>
+      <file url="././usdata/tray_sealing (1).JPG" />
+      <file url="././usdata/tray_sealing (2).JPG" />
+    </media>
+    <assembly_instruction>
+      <step>
+        <description>First build the gel tray. Then insert the rubber cord into the slot of the 3D printed sealing sheets and cut off at the ends.</description>
+        <media>
+          <file url="././usdata/IMG_8516.JPG" />
+          <file url="././usdata/0-tray_sealing (1).JPG" />
+        </media>
+        <component quantity="1" id="444338277" />
+        <component quantity="1" id="408383150" />
+        <component quantity="1" id="1886600608" />
+      </step>
+      <step>
+        <description>Test that the sealing sheets actually make the tray water tight.</description>
+        <media>
+          <file url="././usdata/watertight_tray_sealing.JPG" />
+        </media>
+      </step>
+    </assembly_instruction>
+    <function id="444338277">
+      <description>Gel Tray</description>
+      <designator />
+      <quantity />
+    </function>
+    <function id="408383150">
+      <description>Sealing sheet printed</description>
+      <designator />
+      <quantity />
+      <implementation type="physical_part" id="1473633991" />
+    </function>
+    <function id="1886600608">
+      <description>Rubber cord</description>
+      <designator />
+      <quantity />
+      <implementation type="physical_part" id="2134661607" />
+    </function>
+  </brick>
+  <brick id="18404920">
+    <name>Electrphoresis tank and safety lid</name>
+    <abstract>The tank holds the electrodes and buffer solution to run your gel in it.</abstract>
+    <long_description>This parametric design automatically calculates the amount of buffer needed and provides enough space for that volume in the tank. This follows an extrapolation from the volumes of 28 commercial electrophoresis systems (see graph). The best gel-buffer ratio would otherwise have to be determined experimentally for each design. Here, about 260ml of buffer is needed in addition to the gel volume. There are three main safety features of this tank design: 1) The low-height design with the foulded buffer volume makes the gel box more stable. 2) The electrode contacts stick out to the top, which means that you cannot access any metal parts when the high voltage is on, because the only contact is provided through the insulated lid. This is an important improvement over all open source designs I have seen(!). 3) Should you have to move the tray, then the handels are relatively save from spillage water, because the sides of the tank are lower in the central region, that is seperated from the handle area.</long_description>
+    <notes />
+    <license />
+    <media>
+      <file url="././usdata/IMG_8510.JPG" />
+      <file url="./usdata/1-lid (2).JPG" />
+      <file url="./usdata/graph.png" />
+      <file url="./usdata/0-volumes (1).png" />
+    </media>
+    <assembly_instruction>
+      <step>
+        <description>Bend the central gel tank sheet on the acylic bender. Use the small gel-box-height-measurement-stipe that was part of the laser cut design files to measure where to heat and bend the acrylic sheet. Do the same (with the shorter measurement-stripe) for the ends of the lid and then bend the sides of the lid by placing them ocer the hot thread by eye.</description>
+        <media>
+          <file url="./usdata/benging_measure.JPG" />
+          <file url="./usdata/bending_cool.jpg" />
+        </media>
+        <component quantity="1" id="559285222" />
+      </step>
+      <step>
+        <description>Glue the sheets together one by one and make sure they are aligned well. Don't take more protective foil off the acylic as neccessary and place the acylic bits on toothpicks to prevent them from sticking to the table when applying the arylic glue with a syringe (or equivalent). Glue: The handle bars, the buffer-chamberextension-bar slices in the middle of the tank, the double sided side of the gel tank and the bent central sheet onto the single sided side wall. Let each glued piece dry for at leat 5 minutes (depending on your glue) before moving on.</description>
+        <media>
+          <file url="././usdata/IMG_8418.JPG" />
+          <file url="././usdata/0-IMG_8438.JPG" />
+          <file url="././usdata/IMG_8413.JPG" />
+          <file url="././usdata/IMG_8412.JPG" />
+          <file url="././usdata/IMG_8419.JPG" />
+        </media>
+      </step>
+      <step>
+        <description>The glued-together middle extension tray of the tank might not be a 100% flush at the sides and as such slightly more difficult to glue in with the liquid acylic glue, that does not fill gaps well. If you are are careful, this should work. But I dissolved some acylic left overs (or even better thin swarf) in some acylic glue, and then applied this thicker paste onto one (and later the other) side of the extension tray. I then immidiatelly applied more thin glue with a syringe to close all remaining small air holes and tidied the corners (if the paste protrudes above the tray).</description>
+        <media>
+          <file url="././usdata/IMG_8439.JPG" />
+          <file url="././usdata/IMG_8442.JPG" />
+          <file url="././usdata/IMG_8446.JPG" />
+        </media>
+      </step>
+      <step>
+        <description>Take the two 3D printed wire holders and insert the neilon screws into the holdes at the ends (but not fully). Wrap the electrode wire around them and span it in the ridge between them. Then glue the wire holders into the box with a little acylic glue. Optionally, you can protect the sides of the sire with PTFE tubing.</description>
+        <media>
+          <file url="././usdata/IMG_8472.JPG" />
+          <file url="././usdata/IMG_8478.JPG" />
+          <file url="././usdata/IMG_8479.JPG" />
+        </media>
+        <component quantity="2" id="655802047" />
+        <component quantity="1" id="762815678" />
+        <component quantity="4" id="450540281" />
+      </step>
+      <step>
+        <description>Add a stainless steel nut and washer onto the thread of each banana plug. Insert into the slot of the laser cut acylic so that the electrode wire is trapped in an arch behind the screw and between the nut and the washer (this is a bit fiddly). Tighten the nut and clipp of excess wire.</description>
+        <media>
+          <file url="././usdata/IMG_8491.JPG" />
+          <file url="././usdata/IMG_8499.JPG" />
+          <file url="././usdata/IMG_8503.JPG" />
+          <file url="././usdata/IMG_8507.JPG" />
+          <file url="././usdata/IMG_8508.JPG" />
+        </media>
+        <component quantity="2" id="479126948" />
+      </step>
+      <step>
+        <description>Now finish the lid: Tighten the black banana socket (negative, on the start side of the gel) and the red one (positive, at the end of the gel) in the holes of the lid. Attach flexible wire ends after(!) adding a piece of shrink tube to the wire and solder on (optionally). Heat the shirk tube to insulate the contact. All finished :-)</description>
+        <media>
+          <file url="./usdata/0-IMG_8524.JPG" />
+          <file url="./usdata/0-IMG_8525.JPG" />
+          <file url="./usdata/2-lid (2).JPG" />
+        </media>
+        <component quantity="1" id="1412268206" />
+        <component quantity="1" id="566778078" />
+      </step>
+    </assembly_instruction>
+    <function id="559285222">
+      <description>Laser cut parts</description>
+      <designator />
+      <quantity />
+      <implementation type="physical_part" id="588249096" />
+      <implementation type="physical_part" id="708668033" />
+    </function>
+    <function id="762815678">
+      <description>electrode wire</description>
+      <designator />
+      <quantity />
+      <implementation type="physical_part" id="1851233702" />
+    </function>
+    <function id="655802047">
+      <description>electrode wire holder, 3D printed</description>
+      <designator />
+      <quantity />
+      <implementation type="physical_part" id="259705850" />
+    </function>
+    <function id="479126948">
+      <description>banana plug with M3 thread, M3 nut and washer</description>
+      <designator />
+      <quantity />
+      <implementation type="physical_part" id="948080094" />
+      <implementation type="physical_part" id="578128417" />
+    </function>
+    <function id="1412268206">
+      <description>Banana plugs with flexible leads, red and black</description>
+      <designator />
+      <quantity />
+      <implementation type="physical_part" id="930112488" />
+      <implementation type="physical_part" id="652534416" />
+    </function>
+    <function id="566778078">
+      <description>panel socket (red and black), loot and shrink tube</description>
+      <designator />
+      <quantity />
+      <implementation type="physical_part" id="843980724" />
+      <implementation type="physical_part" id="2085553993" />
+    </function>
+    <function id="450540281">
+      <description>neilon screw, M3</description>
+      <designator />
+      <quantity />
+    </function>
+  </brick>
+  <author id="260344617">
+    <name>Tobias Wenzel</name>
+    <email>wenzel.science@gmail.com</email>
+    <orcid>0000-0001-8443-1315</orcid>
+    <affiliation>University of Cambridge, Cavendish Laboratory</affiliation>
+  </author>
+</docubricks>

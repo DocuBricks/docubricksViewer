@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title></title>
+        <link rel="stylesheet" href="docubricksViewer.css">
+        <link rel="stylesheet" href="lightbox.css">
+    </head>
+    
+    <body>
+        <div id="hiddendata" class="hideclass" id="hiddendata">
+{"bricks":{"372140810":{"license":"MIT license","instructions":[{"name":"assembly","steps":[]}],"notes":"Anything else worth knowing? Inspirations and References as well as hints.","functions":[{"description":"E.g. Linear motor drive and rails","id":"1584757221","implementations":[{"quantity":1,"id":"50301520","type":"part"},{"quantity":3,"id":"1690875349","type":"brick"}]}],"name":"Example Project",
+"files":[{"url":".\/.\/usdata\/0-gelbox_with_psu.JP"}],
+
+"abstract":"Project to demonstrate the use of the most important DocuBricks features","long_description":"Please describe what your hardware does, why you designed it and what the most important features are.","authors":["1978260633"]},"1690875349":{"license":"","instructions":[{"name":"assembly","steps":[]}],"notes":"","functions":[],"name":"Unnamed","files":[],"abstract":"","long_description":"","authors":[]}},"parts":{"50301520":{"supplier_part_num":"","manufacturer_part_num":"","supplier":"Example filament supplier","name":"Example 3D printed part","description":"Example 3D printed part","material_amount":"","files":[],"manufacturing_instruction":{"steps":[{"components":[],"description":"Example: drill through all holes with an M3 clearence drill (3.4mm) to ensure perfect fit of other components.","files":[]}]},"url":"","material_unit":"NONE"}},"authors":{"1978260633":{"affiliation":"University of Cambridge","name":"Max Mustermann","orcid":"For researchers, get one at orcid.org","email":"example@docubricks.com"}}}
+</div>
+    
+        <div id="example"></div>
+        
+        <script src="jquery-2.1.4.min.js"></script>
+        <script src="./node_modules/react/dist/react.js"></script>
+        <script src="./node_modules/react-dom/dist/react-dom.js"></script>
+        <script src="./viewerbundle.js"></script>
+        <script src="lightbox.min.js"></script>
+        <script>
+	    lightbox.option({
+	      'resizeDuration': 200,
+	      'fadeDuration': 	200,
+	      'wrapAround': true
+	    })
+		</script>
+    </body>
+</html>
