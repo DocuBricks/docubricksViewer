@@ -11,14 +11,12 @@ export class Bom {
     * @param n Quantity
     */
     public addPart(p:string,n:number){
-//        console.log("fff "+this.bom.get(p));
         if(n==0)
             n=1;
         if(this.bom.has(p))
             this.bom.set(p,this.bom.get(p)+n);
         else
             this.bom.set(p,n)
-//        console.log("ggg "+this.bom.get(p));
     }
     
 
@@ -68,7 +66,7 @@ export class Brick {
     public license: string;
     public files: MediaFile[];
     public authors: [string];
-    public functions: [BrickFunction];
+    public functions: [BrickFunction];  //should not be used after import
     public mapFunctions:Map<string,BrickFunction>=new Map<string,BrickFunction>();
     public instructions: StepByStepInstruction[];
 
@@ -78,8 +76,10 @@ export class Brick {
      */
     public getBom(proj:Project, recursive:boolean):Bom {
         var bom:Bom=new Bom();
-    
-        this.functions.forEach(function(func:BrickFunction){
+
+        console.log("functions");
+        console.log(this.functions);
+        for(let func of this.mapFunctions.values()){
             func.implementations.forEach(function(imp:FunctionImplementation){
                 if(imp.isPart()){
                     var p:Part=imp.getPart(proj);
@@ -95,7 +95,9 @@ export class Brick {
                     console.log("bad imp type"+imp.type);
                 }
             });
-        });
+        }
+        console.log("bom");
+        console.log(bom);
         return bom;
     }
 
@@ -105,13 +107,14 @@ export class Brick {
      */
     public getChildBricks():Set<string> {
         var referenced:Set<string> = new Set<string>();
-        this.functions.forEach(function(func:BrickFunction){
+        //this.mapFunctions.values().forEach(function(func:BrickFunction){
+        for(let func of this.mapFunctions.values()){
             func.implementations.forEach(function(imp:FunctionImplementation){
                 if(imp.isBrick()){
                     referenced.add(imp.id);               
                 }
             });
-        });
+        }
         return referenced;
     }
     
@@ -122,11 +125,13 @@ export class Brick {
         Object.assign(this,o);
         this.functions=<[BrickFunction]>[];
         var t:Brick=this;
-        //Copy sub-bricks
+        //Copy sub-bricks and functions
         o.functions.forEach(function(ofunc:BrickFunction,index:number){
             var f:BrickFunction=new BrickFunction();
             f.copyfrom(ofunc);
-            t.functions.push(f);
+            //t.functions.push(f);
+            f.id=""+index;
+            t.mapFunctions.set(""+index,f);
         });
     }
 
@@ -174,9 +179,10 @@ export class FunctionImplementation {
     }
     
     copyfrom(oi:FunctionImplementation){
-        this.id=oi.id;
+        Object.assign(this,oi);
+        /*this.id=oi.id;
         this.quantity=oi.quantity;
-        this.type=oi.type;
+        this.type=oi.type;*/
     }
 }
 
@@ -254,19 +260,24 @@ export class Project {
     public bricks:Brick[]=[];
     public parts:Part[]=[];
     public authors:Author[]=[];
-    public mapBricks:Map<string,Brick>=new Map<string,Brick>();
+//    public mapBricks:Map<string,Brick>=new Map<string,Brick>();    //discards order. SHOULD use bricks[]
     public mapParts:Map<string,Part>=new Map<string,Part>();
     public mapAuthors:Map<string,Author>=new Map<string,Author>();
 
 
     public getBrickByName(id:string):Brick{
-        var b:Brick=this.mapBricks.get(id)
-        if(b===undefined){
-            console.error("---- no such brick \""+id+"\"");
-            for(let i of this.mapBricks.keys())
-                console.error(i);
-        }
-        return b;
+        for(let b of this.bricks)
+            if(b.id==id)
+                return b;
+        //var b:Brick=this.mapBricks.get(id)
+        //if(b===undefined){
+        console.error("---- no such brick \""+id+"\"");
+        console.error(this.bricks)
+        //for(let of of this.bricks)
+        //    console.error(i);
+        return null;
+        //}
+        //return b;
     }
     
     public getPartByName(id:string):Part{
@@ -285,19 +296,20 @@ export class Project {
         //See what is referenced
         var referenced:Set<string> = new Set<string>();
    
-        for(let b of this.mapBricks.values()){
+        //for(let b of this.mapBricks.values()){
+        for(let b of this.bricks){
             for(let c of b.getChildBricks())
                 referenced.add(c);
         }
         //Pick unreferenced bricks as roots
         var roots:string[]=[];
-        for(let b of this.mapBricks.values())
+        for(let b of this.bricks)
             if(!referenced.has(b.id))
                 roots.push(b.id);
         
         //Backup: Pick anything as the root. Not great but better
         if(roots.length==0)
-            for(let b of this.mapBricks.values()){
+            for(let b of this.bricks){
                 roots.push(b.id);
                 break;
             }
@@ -312,7 +324,7 @@ export class Project {
         //Pick unreferenced bricks as roots
         var roots:string[]=this.getRootBricks();
         var referenced:Set<string> = new Set<string>();
-        for(let b of this.mapBricks.values())
+        for(let b of this.bricks)
             if(!referenced.has(b.id))
                 thetree.push(this.getBrickTreeR(this, b, referenced));
         return thetree;
@@ -338,29 +350,26 @@ export class Project {
      */
     public copyfrom(o:Project):void{
         //Copy bricks
-        for(let index in o.bricks){
-            var ob:Brick=o.bricks[index];
+        for(let ob of o.bricks){
+            //var ob:Brick=o.bricks[index];
             var b:Brick=new Brick();
             b.copyfrom(ob);
-            var si:string=""+index;
-            b.id=si;
-            this.mapBricks.set(si,b);
+            //var si:string=""+index;
+            //b.id=si;
+            this.bricks.push(b);
+            //this.mapBricks.set(si,b);
         };
         //Copy parts
-        for(let index in o.parts){
-            var op:Part=o.parts[index];
+        for(let op of o.parts){
             var p:Part=new Part();
             p.copyfrom(op);
-            p.id=""+index;
-            this.mapParts.set(index,p);
+            this.mapParts.set(p.id,p);
         };
         //Copy authors
-        for(let index in o.authors){
-            var oa:Author=o.authors[index];
+        for(let oa of o.authors){
             var a:Author=new Author();
             a.copyfrom(oa);
-            a.id=""+index;
-            this.mapAuthors.set(index,a);
+            this.mapAuthors.set(a.id,a);
         };
         
         

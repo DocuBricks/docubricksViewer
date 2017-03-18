@@ -50,37 +50,35 @@ export class DocubricksProject extends React.Component<DocubricksProjectProps, u
         }    
 
         var itemsBricks:JSX.Element[]=[];
-        for(let b of proj.mapBricks.values()){
+        for(let b of proj.bricks){
             itemsBricks.push(<div key={b.id}> <Brick proj={proj} brickid={b.id}/></div>);
         }    
 
         var itemsParts:JSX.Element[]=[];
         for(let b of proj.mapParts.values()){
-            itemsBricks.push(<div key={b.id}> <Part proj={proj} partid={b.id}/></div>);
+            itemsParts.push(<div key={b.id}> <Part proj={proj} partid={b.id}/></div>);
         }    
 
+        console.log(proj);
         var itemsTotalBom:JSX.Element[]=[];
         var roots:string[] = proj.getRootBricks();
         if(roots.length>0){
             var root:Docubricks.Brick=proj.getBrickByName(roots[0]);
             var bom:Docubricks.Bom = root.getBom(proj,true);
-            if(!bom.isEmpty()){
-                itemsTotalBom.push(
-                        <div>
-                            <div className="divbom">
-                                <h1 id="bom">Total bill of materials for this project</h1>
-                            </div>
-                            <BomList proj={proj} bom={bom}/>
-                        </div>);
-            }
+            itemsTotalBom.push(
+                    <div>
+                        <div className="divbom">
+                            <h1 id="bom">Total bill of materials for this project</h1>
+                        </div>
+                        <BomList proj={proj} bom={bom}/>
+                    </div>);
+        } else {
+            console.log("no root brick found for bom");
         }
 
-        function getQueryStringValue (key:string):string {  
-            return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));  
-         } 
         var projectid:string=getQueryStringValue("id");
         var downloadlink="DownloadZip?id="+projectid;
-         
+        
         return <div>
             <div className="w3-sidebar">
                 <h3><a href="./">DocuBricks</a></h3>
@@ -88,6 +86,7 @@ export class DocubricksProject extends React.Component<DocubricksProjectProps, u
                 <br/>
                 <h3>Bricks:</h3>
                 {this.renderBrickTree(brickTree)}
+                <h3><a href="#partstart">Parts</a></h3>
                 <h3><a href="#bom">Bill of materials</a></h3>
                 <h3><a href="#authors">Authors</a></h3>
             </div>
@@ -95,9 +94,9 @@ export class DocubricksProject extends React.Component<DocubricksProjectProps, u
                 <div>
                     {itemsBricks}
                 </div>
-                <div>
+                <div id="partstart">
                     {itemsParts}
-                    </div>
+                </div>
                 <div className="brickdiv">
                     <h1 id="authors">Authors</h1>
                 </div>
@@ -140,7 +139,7 @@ export class Brick extends React.Component<BrickProps, undefined> {
      var brickid:string=this.props.brickid;
      var brick:Docubricks.Brick=proj.getBrickByName(brickid);
      var brickkey="brick"+this.props.brickid;
- 
+     
      const pStyle = {
          textAlign: "left" //text-align
        };
@@ -152,15 +151,57 @@ export class Brick extends React.Component<BrickProps, undefined> {
      }
      addField("Description",brick.long_description);
      mnodes.push(<p key={brickkey+"_brickabstract"} style={pStyle}>{brick.abstract}</p>);
-     mnodes.push(<Files key={brickkey+"_files"}proj={proj} files={brick.files} basekey={brickkey}/>);
+     mnodes.push(<Files key={brickkey+"_files"} proj={proj} files={brick.files} basekey={brickkey}/>);
 
      addField("License",brick.license);
-     addField("notes",brick.notes);
+     addField("Notes",brick.notes);
 
-     /////////////// authors
-     //////////////// functions & implementations
-
+     //Authors
+     if(brick.authors.length!=0){
+         var alist:string="";
+         for(let a of brick.instructions){
+             if(alist.length!=0){
+                 alist=alist+", "+a.name;
+             } else
+                 alist=a.name;
+         }
+         addField("Authors",brick.notes);
+     }
+     
+     //Functions & implementations
+     var reqnodes:JSX.Element[]=[];
+     for(let func of brick.mapFunctions.values()){
+         var fnodes:JSX.Element[]=[];
+         for(let imp of func.implementations){
+             var impend:string="";
+             if(fnodes.length!=0)
+                 fnodes.push(<b>, </b>);
+             if(imp.isPart()){
+                 var ip:Docubricks.Part=imp.getPart(proj);
+                 fnodes.push(<a href={"#part_"+imp.id}>{ip.name} <b>x {imp.quantity}</b></a>);
+             } else if(imp.isBrick()){
+                 var ib:Docubricks.Brick=imp.getBrick(proj);
+                 fnodes.push(<a href={"#brick_"+imp.id}>{ib.name} <b>x {imp.quantity}</b></a>);
+             }
+         }
+         var desc:string="";
+         if(func.description!="")
+             desc=func.description+": ";
+         reqnodes.push(<li><b>{desc}</b>{fnodes}</li>)
+     }
+     var reqnodes2:JSX.Element[]=[];
+     if(reqnodes.length!=0){
+         reqnodes2=[<div>
+                     <b>Requires:</b>
+                         <ul>
+                         {reqnodes}
+                         </ul>
+                 </div>];
+     }
+     
+     
      //The bill of materials
+     /*
      var bom:Docubricks.Bom = brick.getBom(proj,false);
      if(!bom.isEmpty()){
          mnodes.push(
@@ -171,17 +212,21 @@ export class Brick extends React.Component<BrickProps, undefined> {
                      <BomList proj={proj} bom={bom}/>
                  </div>);
      }
+     */
 
      
      //All the instructions
+     var instrnodes:JSX.Element[]=[];
      for(let instr of brick.instructions){
-         mnodes.push(<div key={brickkey+"_"+instr.name}>
+         instrnodes.push(<div key={brickkey+"_"+instr.name}>
                  <InstructionList proj={proj} brick={brick} part={null} instr={instr}/></div>);
      }
      
      var ret:JSX.Element=<div>
          <div className="brickdiv"><h1 id={"brick_"+brickid}>{brick.name}</h1></div>
          {mnodes}
+         {reqnodes2}
+         {instrnodes}
          </div>;
      return ret;
   }
@@ -292,8 +337,11 @@ export class InstructionList extends React.Component<InstructionListProps, undef
          snodes.push(<div key={stepkey+"_end"} style={divclear}/>);
          curstep++;
      }
+     var instrtitle:string = "Instruction: "+instr.name;
+     if(instr.name=="assembly")
+         instrtitle="Assembly instruction";
      if(snodes.length>0)
-         return <div key={key+"_main"}><h3>Instruction: {instr.name}</h3>{snodes}</div>;
+         return <div key={key+"_main"}><h3>{instrtitle}</h3>{snodes}</div>;
      else
          return <div key={key+"_main"}></div>;
  }
@@ -382,11 +430,17 @@ var formatURLfile=function(url:string, filename:string):JSX.Element[]{
     urlcount=urlcount+1;
     var ret:JSX.Element[]=[];       
     if(url!=""){
-        ret.push(<a key={"url_"+urlcount+"_"+url} href={url}><b>File: {filename}</b></a>)
+        ret.push(<p key={"url_"+urlcount+"_"+url}><a href={url}><b>File: {filename}</b></a></p>)
     }
     return ret;
 }
 
+var getQueryStringValue=function(key:string):string {  
+    return decodeURIComponent(
+            window.location.search.replace(
+                    new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).
+                            replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));  
+} 
 
 
 
@@ -404,8 +458,16 @@ export class Files extends React.Component<FilesProps, undefined> {
             return(url.toLowerCase().match(/\.(jpeg|jpg|gif|png|svg)$/) != null);
         }
         
+        var projectid:string=getQueryStringValue("id");
+        var basedir:string="./project/";
+        if(projectid!=""){
+            basedir="./project/"+projectid+"/";
+        }
+        //var downloadlink="DownloadZip?id="+projectid;
+
         //Collect the files and images
         var inodes:JSX.Element[]=[];
+        var fnodes:JSX.Element[]=[];
         for(let f of files){ //width="50%"
             const imgStyle = {
                     maxWidth:'300px',
@@ -413,18 +475,21 @@ export class Files extends React.Component<FilesProps, undefined> {
                     maxHeight:'300px',
                     margin:'5px'
             };
-            var imgurl="./project/"+f.url;
+            
+            var imgurl=basedir+f.url;
             if(isImage(imgurl)){
                 inodes.push(
                         <a key={this.props.basekey+f.url} href={imgurl} data-lightbox="image">
                         <img src={imgurl} style={imgStyle}/>
                 </a>);
             } else{
-                inodes.push(formatURLfile(imgurl,f.url)[0]);
+                var s:String=new String(f.url);
+                s=s.replace(/.*\//gi, "");
+                fnodes.push(formatURLfile(imgurl,s.toString())[0]);
             }
 
         }
 
-         return <div>{inodes}</div>
+         return <div>{fnodes}{inodes}</div>
     }
 }
