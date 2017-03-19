@@ -353,12 +353,12 @@ export class InstructionList extends React.Component<InstructionListProps, undef
      var curstep:number=1;
      for(let step of instr.steps){
          var stepkey=key+"_"+curstep;
-         snodes.push(<div key={stepkey}>
-                 <nav>
+         snodes.push(<div className="step" key={stepkey}>
+           <hr/>
+                 <nav className="image-col">
                      <Files proj={proj} files={step.files} basekey={stepkey}/>
                  </nav>
-                 <article>
-                  <hr/>
+                 <article className="text-col">
                      <b>Step {curstep}. </b>
                      {step.description}
                  </article>

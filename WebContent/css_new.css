@@ -31,7 +31,7 @@ body {
   padding-top: 20px;
 }
 #sidebar .nav {
-  width: 45%;
+  width: 40%;
 }
 #sidebar li {
   border:0 #f2f2f2 solid;
@@ -104,6 +104,23 @@ td {
 }
 
 
+.image-col {
+    float: right;
+    width: 60%; /*300px;*/
+    margin: 0;
+    margin-left: 20px;
+    padding: 1em;
+    text-align:center;
+    vertical-align: middle;
+}
+/* where the instruction text is */
+.text-col {
+    max-width: 600px;
+    /*border-left: 1px solid gray;*/
+    padding: 1em;
+    overflow: hidden;
+}
+
 
 
 @media print {
@@ -123,6 +140,10 @@ td {
     .brickdiv {
       page-break-before:avoid;
       page-break-after:avoid;
+    }
+
+    .step {
+      page-break-inside: avoid;
     }
 
 }

@@ -683,11 +683,11 @@ class InstructionList extends React.Component {
         var curstep = 1;
         for (let step of instr.steps) {
             var stepkey = key + "_" + curstep;
-            snodes.push(React.createElement("div", { key: stepkey },
-                React.createElement("nav", null,
+            snodes.push(React.createElement("div", { className: "step", key: stepkey },
+                React.createElement("hr", null),
+                React.createElement("nav", { className: "image-col" },
                     React.createElement(Files, { proj: proj, files: step.files, basekey: stepkey })),
-                React.createElement("article", null,
-                    React.createElement("hr", null),
+                React.createElement("article", { className: "text-col" },
                     React.createElement("b", null,
                         "Step ",
                         curstep,
