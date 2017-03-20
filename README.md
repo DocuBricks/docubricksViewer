@@ -4,7 +4,7 @@ Docubricks viewer
 Viewer for [docubricks](http://docubricks.com/) - high quality Open Science Hardware documentations.
 
 
-Build using React and Webpack
+Built using React and Webpack
 
 
 #### Build
