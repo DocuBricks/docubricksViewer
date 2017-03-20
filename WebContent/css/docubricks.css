@@ -8,6 +8,14 @@
 
 @import url("http://bootswatch.com/cosmo/bootstrap.min.css");
 
+
+.all{
+  max-width: 1200px;
+  align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 :target:before {
   content:"";
   display:block;
@@ -19,19 +27,26 @@ body {
   padding-top: 51px;
   word-wrap: break-word;
 }
+
 .text-center {
   padding-top: 20px;
 }
+
 .col-xs-12 {
   background-color: #fff;
 }
+
 #sidebar {
   height: 100%;
   padding-right: 0;
   padding-top: 20px;
 }
 #sidebar .nav {
-  width: 40%;
+  width:20%;
+}
+
+#submenu1 > ul {
+  width: 300% !important;
 }
 #sidebar li {
   border:0 #f2f2f2 solid;
@@ -77,12 +92,19 @@ ul {
 }
 
 
+#loading-text{
+  text-align: center;
+}
 
 #main-content{
   /*position: sticky;*/
   overflow: hidden;
   padding-top: 51px;
 
+}
+
+.hideclass {
+  display:none;
 }
 
 
@@ -148,4 +170,17 @@ td {
       page-break-inside: avoid;
     }
 
+}
+
+.accordion-toggle.collapsed:after {
+    /* symbol for "collapsed" panels */
+    content: "\e080";    /* adjust as needed, taken from bootstrap.css */
+}
+.accordion-toggle:after {
+    /* symbol for "opening" panels */
+    font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+    content: "\e114";    /* adjust as needed, taken from bootstrap.css */
+    /*padding-left: 90px;*/
+    padding-right: 40%;
+    float: right;
 }

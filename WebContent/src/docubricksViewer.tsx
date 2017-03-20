@@ -77,8 +77,8 @@ export class DocubricksProject extends React.Component<DocubricksProjectProps, u
         var projectid:string=getQueryStringValue("id");
         var downloadlink="DownloadZip?id="+projectid;
 
-        return <div>
-        <div></div><div className="page-container">
+        return <div className="all">
+        <div className="page-container">
 
             <div className="navbar navbar-default navbar-fixed-top" role="navigation">
                <div className="container">
@@ -99,7 +99,7 @@ export class DocubricksProject extends React.Component<DocubricksProjectProps, u
                 <div className="col-xs-12 col-sm-3 sidebar-offcanvas no-print" id="sidebar" role="navigation" >
                     <ul className="nav" data-spy="affix">
                       <li><a href={downloadlink}>Download project</a></li>
-                      <li><a id="btn-1" data-toggle="collapse" data-target="#submenu1" aria-expanded="false">Bricks</a>
+                      <li><a className="accordion-toggle collapsed" id="btn-1" data-toggle="collapse" data-target="#submenu1" aria-expanded="false">Bricks</a>
                         <li className="nav collapse" id="submenu1" role="menu" aria-labelledby="btn-1">
                           {this.renderBrickTree(brickTree)}
                         </li>

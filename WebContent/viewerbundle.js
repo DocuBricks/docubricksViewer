@@ -434,7 +434,6 @@ class DocubricksProject extends React.Component {
         var proj = this.props.proj;
         document.title = "DocuBricks - " + proj.getNameOfProject();
         var brickTree = proj.getBrickTree();
-        console.log(brickTree);
         var itemsAuthors = [];
         for (let a of proj.mapAuthors.values()) {
             itemsAuthors.push(React.createElement(Author, { key: "author_" + a.id, proj: proj, authorid: a.id }));
@@ -451,7 +450,6 @@ class DocubricksProject extends React.Component {
                 " ",
                 React.createElement(Part, { proj: proj, partid: b.id })));
         }
-        console.log(proj);
         var itemsTotalBom = [];
         var roots = proj.getRootBricks();
         if (roots.length > 0) {
@@ -467,8 +465,7 @@ class DocubricksProject extends React.Component {
         }
         var projectid = getQueryStringValue("id");
         var downloadlink = "DownloadZip?id=" + projectid;
-        return React.createElement("div", null,
-            React.createElement("div", null),
+        return React.createElement("div", { className: "all" },
             React.createElement("div", { className: "page-container" },
                 React.createElement("div", { className: "navbar navbar-default navbar-fixed-top", role: "navigation" },
                     React.createElement("div", { className: "container" },
@@ -485,7 +482,7 @@ class DocubricksProject extends React.Component {
                                 React.createElement("li", null,
                                     React.createElement("a", { href: downloadlink }, "Download project")),
                                 React.createElement("li", null,
-                                    React.createElement("a", { id: "btn-1", "data-toggle": "collapse", "data-target": "#submenu1", "aria-expanded": "false" }, "Bricks"),
+                                    React.createElement("a", { className: "accordion-toggle collapsed", id: "btn-1", "data-toggle": "collapse", "data-target": "#submenu1", "aria-expanded": "false" }, "Bricks"),
                                     React.createElement("li", { className: "nav collapse", id: "submenu1", role: "menu", "aria-labelledby": "btn-1" }, this.renderBrickTree(brickTree))),
                                 React.createElement("li", null,
                                     React.createElement("a", { href: "#partstart" }, "Parts")),
@@ -530,7 +527,7 @@ class Brick extends React.Component {
                     value));
         };
         addField("Description", brick.long_description);
-        mnodes.push(React.createElement("p", { key: brickkey + "_brickabstract", style: pStyle }, brick.abstract));
+        mnodes.push(React.createElement("p", { key: brickkey + "_brickabstract" }, brick.abstract));
         mnodes.push(React.createElement(Files, { key: brickkey + "_files", proj: proj, files: brick.files, basekey: brickkey }));
         addField("License", brick.license);
         addField("Notes", brick.notes);
