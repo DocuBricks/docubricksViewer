@@ -485,7 +485,7 @@ class DocubricksProject extends React.Component {
                                 React.createElement("li", null,
                                     React.createElement("a", { href: downloadlink }, "Download project")),
                                 React.createElement("li", null,
-                                    React.createElement("a", { href: "#", id: "btn-1", "data-toggle": "collapse", "data-target": "#submenu1", "aria-expanded": "false" }, "Bricks"),
+                                    React.createElement("a", { id: "btn-1", "data-toggle": "collapse", "data-target": "#submenu1", "aria-expanded": "false" }, "Bricks"),
                                     React.createElement("li", { className: "nav collapse", id: "submenu1", role: "menu", "aria-labelledby": "btn-1" }, this.renderBrickTree(brickTree))),
                                 React.createElement("li", null,
                                     React.createElement("a", { href: "#partstart" }, "Parts")),

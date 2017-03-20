@@ -81,6 +81,8 @@ ul {
 #main-content{
   /*position: sticky;*/
   overflow: hidden;
+  padding-top: 51px;
+
 }
 
 

@@ -42,7 +42,6 @@ export class DocubricksProject extends React.Component<DocubricksProjectProps, u
         document.title="DocuBricks - "+proj.getNameOfProject();
 
         var brickTree:[Docubricks.BrickTree] = proj.getBrickTree();
-        console.log(brickTree);
 
         var itemsAuthors:JSX.Element[]=[];
         for(let a of proj.mapAuthors.values()){
@@ -59,7 +58,6 @@ export class DocubricksProject extends React.Component<DocubricksProjectProps, u
             itemsParts.push(<div key={b.id}> <Part proj={proj} partid={b.id}/></div>);
         }
 
-        console.log(proj);
         var itemsTotalBom:JSX.Element[]=[];
         var roots:string[] = proj.getRootBricks();
         if(roots.length>0){
@@ -101,7 +99,7 @@ export class DocubricksProject extends React.Component<DocubricksProjectProps, u
                 <div className="col-xs-12 col-sm-3 sidebar-offcanvas no-print" id="sidebar" role="navigation" >
                     <ul className="nav" data-spy="affix">
                       <li><a href={downloadlink}>Download project</a></li>
-                      <li><a href="#" id="btn-1" data-toggle="collapse" data-target="#submenu1" aria-expanded="false">Bricks</a>
+                      <li><a id="btn-1" data-toggle="collapse" data-target="#submenu1" aria-expanded="false">Bricks</a>
                         <li className="nav collapse" id="submenu1" role="menu" aria-labelledby="btn-1">
                           {this.renderBrickTree(brickTree)}
                         </li>
@@ -179,7 +177,7 @@ export class Brick extends React.Component<BrickProps, undefined> {
              mnodes.push(<p key={brickkey+"_"+name}><b>{name}: </b>{value}</p>);
      }
      addField("Description",brick.long_description);
-     mnodes.push(<p key={brickkey+"_brickabstract"} style={pStyle}>{brick.abstract}</p>);
+     mnodes.push(<p key={brickkey+"_brickabstract"} >{brick.abstract}</p>);
      mnodes.push(<Files key={brickkey+"_files"} proj={proj} files={brick.files} basekey={brickkey}/>);
 
      addField("License",brick.license);
