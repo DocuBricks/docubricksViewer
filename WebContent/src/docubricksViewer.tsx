@@ -364,7 +364,7 @@ export class InstructionList extends React.Component<InstructionListProps, undef
          snodes.push(<div key={stepkey+"_end"} style={divclear}/>);
          curstep++;
      }
-     var instrtitle:string = "Instruction: "+instr.name;
+     var instrtitle:string = "Instruction: "+instr.name || '';
      if(instr.name=="assembly")
          instrtitle="Assembly instruction";
      if(snodes.length>0)
