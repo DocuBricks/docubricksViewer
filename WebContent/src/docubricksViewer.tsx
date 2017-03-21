@@ -185,13 +185,14 @@ export class Brick extends React.Component<BrickProps, undefined> {
      //Authors
      if(brick.authors.length!=0){
          var alist:string="";
-         for(let a of brick.instructions){
+         for(let aid of brick.authors){
+             var a:Docubricks.Author=proj.getAuthorById(aid);
              if(alist.length!=0){
                  alist=alist+", "+a.name;
              } else
                  alist=a.name;
          }
-         addField("Authors",brick.notes);
+         addField("Authors",alist);
      }
 
      //Functions & implementations
