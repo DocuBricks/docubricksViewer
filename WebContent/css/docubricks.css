@@ -127,6 +127,11 @@ td {
   padding-right: 10px;
 }
 
+th {
+  padding-right: 10px;
+}
+
+
 
 .image-col {
     float: right;
