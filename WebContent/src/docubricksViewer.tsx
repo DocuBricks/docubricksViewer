@@ -96,11 +96,11 @@ export class DocubricksProject extends React.Component<DocubricksProjectProps, u
             <div className="container">
               <div className="row row-offcanvas row-offcanvas-left" >
 
-                <div className="col-xs-12 col-sm-3 sidebar-offcanvas no-print" id="sidebar" role="navigation" >
+                <div className="col-xs-12 col-sm-4 sidebar-offcanvas no-print" id="sidebar" role="navigation" >
                     <ul className="nav" data-spy="affix">
                       <li><a href={downloadlink}>Download project</a></li>
-                      <li><a className="accordion-toggle collapsed" id="btn-1" data-toggle="collapse" data-target="#submenu1" aria-expanded="false">Bricks</a>
-                        <li className="nav collapse" id="submenu1" role="menu" aria-labelledby="btn-1">
+                      <li><a className="accordion-toggle" id="btn-1" data-toggle="collapse" data-target="#submenu1" aria-expanded="true">Bricks</a>
+                        <li className="nav collapse in " id="submenu1" role="menu" aria-labelledby="btn-1">
                           {this.renderBrickTree(brickTree)}
                         </li>
                       </li>
@@ -110,7 +110,7 @@ export class DocubricksProject extends React.Component<DocubricksProjectProps, u
                     </ul>
                 </div>
 
-                <div className="col-xs-12 col-sm-9" id="main-content">
+                <div className="col-xs-12 col-sm-8" id="main-content">
                   <div>
                       <div id="brickstart">
                           {itemsBricks}
@@ -175,6 +175,10 @@ export class Brick extends React.Component<BrickProps, undefined> {
      var addField=function(name:string,value:string):void{
          if(value!="")
              mnodes.push(<p key={brickkey+"_"+name}><b>{name}: </b>{value}</p>);
+     }
+
+     if (typeof brick.abstract != 'undefined'){
+       addField("Abstract", brick.abstract);
      }
      addField("Description",brick.long_description);
      mnodes.push(<p key={brickkey+"_brickabstract"} >{brick.abstract}</p>);
@@ -498,19 +502,13 @@ export class Files extends React.Component<FilesProps, undefined> {
         //Collect the files and images
         var inodes:JSX.Element[]=[];
         var fnodes:JSX.Element[]=[];
-        for(let f of files){ //width="50%"
-            const imgStyle = {
-                    maxWidth:'300px',
-                    //width:'100%',
-                    maxHeight:'300px',
-                    margin:'5px'
-            };
-
-            var imgurl=basedir+f.url;
+        for(let f of files){
+            var imgurl=basedir  + f.url.replace(/\.\//g, '');
             if(isImage(imgurl)){
                 inodes.push(
                         <a key={this.props.basekey+f.url} href={imgurl} data-lightbox="image">
-                        <img src={imgurl} style={imgStyle}/>
+                        <img className="instr-img"src={imgurl}/>
+                        <p className = "instr-img-caption no-print">Expand</p>
                 </a>);
             } else{
                 var s:String=new String(f.url);
