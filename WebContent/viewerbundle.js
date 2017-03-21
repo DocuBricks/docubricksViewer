@@ -534,14 +534,15 @@ class Brick extends React.Component {
         //Authors
         if (brick.authors.length != 0) {
             var alist = "";
-            for (let a of brick.instructions) {
+            for (let aid of brick.authors) {
+                var a = proj.getAuthorById(aid);
                 if (alist.length != 0) {
                     alist = alist + ", " + a.name;
                 }
                 else
                     alist = a.name;
             }
-            addField("Authors", brick.notes);
+            addField("Authors", alist);
         }
         //Functions & implementations
         var reqnodes = [];
