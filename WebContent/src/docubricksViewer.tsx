@@ -185,14 +185,13 @@ export class Brick extends React.Component<BrickProps, undefined> {
      //Authors
      if(brick.authors.length!=0){
          var alist:string="";
-         for(let aid of brick.authors){
-             var a:Docubricks.Author=proj.getAuthorById(aid);
+         for(let a of brick.instructions){
              if(alist.length!=0){
                  alist=alist+", "+a.name;
              } else
                  alist=a.name;
          }
-         addField("Authors",alist);
+         addField("Authors",brick.notes);
      }
 
      //Functions & implementations
@@ -365,7 +364,8 @@ export class InstructionList extends React.Component<InstructionListProps, undef
          snodes.push(<div key={stepkey+"_end"} style={divclear}/>);
          curstep++;
      }
-     var instrtitle:string = "Instruction: "+instr.name || '';
+     var instrtitlecontent:string = instr.name || '';
+     var instrtitle:string = "Instruction: "+ instrtitlecontent;
      if(instr.name=="assembly")
          instrtitle="Assembly instruction";
      if(snodes.length>0)
