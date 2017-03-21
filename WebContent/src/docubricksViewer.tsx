@@ -5,7 +5,6 @@ import * as Docubricks from "./docubricks";
 
 
 
-
 /**
  * Main component
  */
@@ -26,40 +25,38 @@ export class DocubricksProject extends React.Component<DocubricksProjectProps, u
         var proj:Docubricks.Project=this.props.proj;
         var mnodes:JSX.Element[]=[];
         for(let c of t.children){
-            mnodes.push(<ul key={"treechild_"+c.brick.id}>{this.renderBrickTreeR(c)}</ul>);
+            mnodes.push(<li key={"treechild_"+c.brick.id}>{this.renderBrickTreeR(c)}</li>);
         }
-        return <li key={"treenode_"+t.brick.id}><a href={"#brick_"+t.brick.id}>{t.brick.name}</a><ul>{mnodes}</ul></li>;
+        return <div key={"treenode_"+t.brick.id}><a href={"#brick_"+t.brick.id}>{t.brick.name}</a><ul>{mnodes}</ul></div>;
     }
 
-    
-    
+
+
     /**
      * Main rendering function
      */
     render() {
         var proj:Docubricks.Project=this.props.proj;
-    
+
         document.title="DocuBricks - "+proj.getNameOfProject();
-    
+
         var brickTree:[Docubricks.BrickTree] = proj.getBrickTree();
-        console.log(brickTree);
-    
+
         var itemsAuthors:JSX.Element[]=[];
         for(let a of proj.mapAuthors.values()){
             itemsAuthors.push(<Author key={"author_"+a.id} proj={proj} authorid={a.id}/>);
-        }    
+        }
 
         var itemsBricks:JSX.Element[]=[];
         for(let b of proj.bricks){
             itemsBricks.push(<div key={b.id}> <Brick proj={proj} brickid={b.id}/></div>);
-        }    
+        }
 
         var itemsParts:JSX.Element[]=[];
         for(let b of proj.mapParts.values()){
             itemsParts.push(<div key={b.id}> <Part proj={proj} partid={b.id}/></div>);
-        }    
+        }
 
-        console.log(proj);
         var itemsTotalBom:JSX.Element[]=[];
         var roots:string[] = proj.getRootBricks();
         if(roots.length>0){
@@ -78,45 +75,74 @@ export class DocubricksProject extends React.Component<DocubricksProjectProps, u
 
         var projectid:string=getQueryStringValue("id");
         var downloadlink="DownloadZip?id="+projectid;
-        
-        return <div>
-            <div className="w3-sidebar">
-                <h3><a href="./">DocuBricks</a></h3>
-                <h3><a href={downloadlink}>Download project</a></h3>
-                <br/>
-                <h3>Bricks:</h3>
-                {this.renderBrickTree(brickTree)}
-                <h3><a href="#partstart">Parts</a></h3>
-                <h3><a href="#bom">Bill of materials</a></h3>
-                <h3><a href="#authors">Authors</a></h3>
+
+        return <div className="all">
+        <div className="page-container">
+
+            <div className="navbar navbar-default navbar-fixed-top" role="navigation">
+               <div className="container">
+              <div className="navbar-header">
+                   <button type="button" className="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+                     <span className="icon-bar"></span>
+                     <span className="icon-bar"></span>
+                     <span className="icon-bar"></span>
+                   </button>
+                   <a className="navbar-brand" href="./">DocuBricks</a>
+              </div>
+               </div>
             </div>
-            <div className="w3-container">
-                <div>
-                    {itemsBricks}
+
+            <div className="container">
+              <div className="row row-offcanvas row-offcanvas-left" >
+
+                <div className="col-xs-12 col-sm-3 sidebar-offcanvas no-print" id="sidebar" role="navigation" >
+                    <ul className="nav" data-spy="affix">
+                      <li><a href={downloadlink}>Download project</a></li>
+                      <li><a className="accordion-toggle collapsed" id="btn-1" data-toggle="collapse" data-target="#submenu1" aria-expanded="false">Bricks</a>
+                        <li className="nav collapse" id="submenu1" role="menu" aria-labelledby="btn-1">
+                          {this.renderBrickTree(brickTree)}
+                        </li>
+                      </li>
+                      <li><a href="#partstart">Parts</a></li>
+                      <li><a href="#bom">Bill of materials</a></li>
+                      <li><a href="#authors">Authors</a></li>
+                    </ul>
                 </div>
-                <div id="partstart">
-                    {itemsParts}
+
+                <div className="col-xs-12 col-sm-9" id="main-content">
+                  <div>
+                      <div id="brickstart">
+                          {itemsBricks}
+                      </div>
+                      <div id="partstart">
+                          {itemsParts}
+                      </div>
+                      <div className="brickdiv">
+                          <h3 id="authors">Authors</h3>
+                      </div>
+                      <table>
+                          <thead>
+                              <tr>
+                                  <th>Name</th>
+                                  <th>E-mail</th>
+                                  <th>Affiliation</th>
+                                  <th>ORCID</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              {itemsAuthors}
+                          </tbody>
+                      </table>
+                      {itemsTotalBom}
+                  </div>
+
+
                 </div>
-                <div className="brickdiv">
-                    <h1 id="authors">Authors</h1>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>E-mail</th>
-                            <th>Affiliation</th>
-                            <th>ORCID</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {itemsAuthors}
-                    </tbody>
-                </table>
-                {itemsTotalBom}
             </div>
+          </div>
+        </div>
         </div>;
-        
+
     }
 }
 
@@ -139,18 +165,18 @@ export class Brick extends React.Component<BrickProps, undefined> {
      var brickid:string=this.props.brickid;
      var brick:Docubricks.Brick=proj.getBrickByName(brickid);
      var brickkey="brick"+this.props.brickid;
-     
+
      const pStyle = {
          textAlign: "left" //text-align
        };
- 
+
      var mnodes:JSX.Element[]=[];
      var addField=function(name:string,value:string):void{
          if(value!="")
              mnodes.push(<p key={brickkey+"_"+name}><b>{name}: </b>{value}</p>);
      }
      addField("Description",brick.long_description);
-     mnodes.push(<p key={brickkey+"_brickabstract"} style={pStyle}>{brick.abstract}</p>);
+     mnodes.push(<p key={brickkey+"_brickabstract"} >{brick.abstract}</p>);
      mnodes.push(<Files key={brickkey+"_files"} proj={proj} files={brick.files} basekey={brickkey}/>);
 
      addField("License",brick.license);
@@ -167,7 +193,7 @@ export class Brick extends React.Component<BrickProps, undefined> {
          }
          addField("Authors",brick.notes);
      }
-     
+
      //Functions & implementations
      var reqnodes:JSX.Element[]=[];
      for(let func of brick.mapFunctions.values()){
@@ -198,8 +224,8 @@ export class Brick extends React.Component<BrickProps, undefined> {
                          </ul>
                  </div>];
      }
-     
-     
+
+
      //The bill of materials
      /*
      var bom:Docubricks.Bom = brick.getBom(proj,false);
@@ -214,14 +240,14 @@ export class Brick extends React.Component<BrickProps, undefined> {
      }
      */
 
-     
+
      //All the instructions
      var instrnodes:JSX.Element[]=[];
      for(let instr of brick.instructions){
          instrnodes.push(<div key={brickkey+"_"+instr.name}>
                  <InstructionList proj={proj} brick={brick} part={null} instr={instr}/></div>);
      }
-     
+
      var ret:JSX.Element=<div>
          <div className="brickdiv"><h1 id={"brick_"+brickid}>{brick.name}</h1></div>
          {mnodes}
@@ -230,8 +256,8 @@ export class Brick extends React.Component<BrickProps, undefined> {
          </div>;
      return ret;
   }
- 
- 
+
+
 }
 
 
@@ -247,10 +273,10 @@ export class Part extends React.Component<PartProps, undefined> {
      var partid:string=this.props.partid;
      var part:Docubricks.Part=proj.getPartByName(partid);
      var partkey="part"+partid;
- 
+
      ////////////////////////////xpublic files: MediaFile[];
- 
-     
+
+
      var mnodes:JSX.Element[]=[];
      var addField=function(name:string,value:string):void{
          if(value!="")
@@ -265,15 +291,15 @@ export class Part extends React.Component<PartProps, undefined> {
          mnodes.push(<p key={partkey+"_url"}><b>URL: </b>{formatURL(part.url)}</p>);
      if(part.material_amount!="")
          addField("Material usage",part.material_amount+" "+part.material_unit);
- 
+
      //All the instructions
      if(part.manufacturing_instruction.steps.length!=null){
          mnodes.push(<div key={partkey+"_instr"}>
                  <InstructionList proj={proj} brick={null} part={part} instr={part.manufacturing_instruction}/></div>);
      }
-     
+
      var ret:JSX.Element=<div>
-         <div className="partdiv"><h1 id={"part_"+partid}>Part: {part.name}</h1></div>
+         <div className="partdiv"><h3 id={"part_"+partid}>Part: {part.name}</h3></div>
          {mnodes}
          </div>;
      return ret;
@@ -306,29 +332,30 @@ export class Author extends React.Component<AuthorProps, undefined> {
 /**
  * List of instructions
  */
-export interface InstructionListProps 
+export interface InstructionListProps
     {proj: Docubricks.Project; brick:Docubricks.Brick; part:Docubricks.Part; instr:Docubricks.StepByStepInstruction;}
 export class InstructionList extends React.Component<InstructionListProps, undefined> {
     render() {
      var proj:Docubricks.Project=this.props.proj;
-     var brick:Docubricks.Brick=this.props.brick; 
-     var instr:Docubricks.StepByStepInstruction=this.props.instr; 
+     var brick:Docubricks.Brick=this.props.brick;
+     var instr:Docubricks.StepByStepInstruction=this.props.instr;
 
      var key;
      if(brick!=null)
          key="instrBrick"+brick.id+"_instr"+instr.name;
      else
          key="instrPart"+this.props.part.id+"_instr"+instr.name;
- 
+
      var snodes:JSX.Element[]=[];
      var curstep:number=1;
      for(let step of instr.steps){
          var stepkey=key+"_"+curstep;
-         snodes.push(<div key={stepkey}>
-                 <nav>
+         snodes.push(<div className="step" key={stepkey}>
+           <hr/>
+                 <nav className="image-col">
                      <Files proj={proj} files={step.files} basekey={stepkey}/>
                  </nav>
-                 <article>
+                 <article className="text-col">
                      <b>Step {curstep}. </b>
                      {step.description}
                  </article>
@@ -355,18 +382,18 @@ export class InstructionList extends React.Component<InstructionListProps, undef
 /**
  * Bill of materials
  */
-export interface BomProps 
+export interface BomProps
     {proj: Docubricks.Project; bom:Docubricks.Bom}
 export class BomList extends React.Component<BomProps, undefined> {
 render() {
     var proj:Docubricks.Project=this.props.proj;
     var snodes:JSX.Element[]=[];
-    
+
     var roots:string[] = proj.getRootBricks();
     if(roots.length>0){
         var root:Docubricks.Brick=proj.getBrickByName(roots[0]);
         var bom:Docubricks.Bom = root.getBom(proj,true);
-    
+
         //Loop over parts
         var key="mainbom_";
         var curstep:number=1;
@@ -385,11 +412,11 @@ render() {
                     <td>{formatURL(part.url)}</td>
                 </tr>);
         }
-        
+
         } else {
             return <div></div>;
         }
-            
+
     return <div key={key+"_main"}>
             <table>
                 <thead>
@@ -415,7 +442,7 @@ render() {
 var urlcount:number=1;
 var formatURL=function(url:string):JSX.Element[]{
     urlcount=urlcount+1;
-    var ret:JSX.Element[]=[];       
+    var ret:JSX.Element[]=[];
     if(url!=""){
         var s:String=new String(url);
         s=s.replace(/.+\:\/\//gi, "");
@@ -428,36 +455,36 @@ var formatURL=function(url:string):JSX.Element[]{
 
 var formatURLfile=function(url:string, filename:string):JSX.Element[]{
     urlcount=urlcount+1;
-    var ret:JSX.Element[]=[];       
+    var ret:JSX.Element[]=[];
     if(url!=""){
         ret.push(<p key={"url_"+urlcount+"_"+url}><a href={url}><b>File: {filename}</b></a></p>)
     }
     return ret;
 }
 
-var getQueryStringValue=function(key:string):string {  
+var getQueryStringValue=function(key:string):string {
     return decodeURIComponent(
             window.location.search.replace(
                     new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).
-                            replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));  
-} 
+                            replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+}
 
 
 
 /**
  * List of files
  */
-export interface FilesProps 
+export interface FilesProps
     {proj: Docubricks.Project; files:Docubricks.MediaFile[]; basekey:string}
 export class Files extends React.Component<FilesProps, undefined> {
     render() {
         var proj:Docubricks.Project=this.props.proj;
-        var files:Docubricks.MediaFile[]=this.props.files; 
-    
+        var files:Docubricks.MediaFile[]=this.props.files;
+
         function isImage(url:string) {
             return(url.toLowerCase().match(/\.(jpeg|jpg|gif|png|svg)$/) != null);
         }
-        
+
         var projectid:string=getQueryStringValue("id");
         var basedir:string="./project/";
         if(projectid!=""){
@@ -475,7 +502,7 @@ export class Files extends React.Component<FilesProps, undefined> {
                     maxHeight:'300px',
                     margin:'5px'
             };
-            
+
             var imgurl=basedir+f.url;
             if(isImage(imgurl)){
                 inodes.push(
