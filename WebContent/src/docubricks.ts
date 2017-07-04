@@ -1,6 +1,9 @@
 /**
  * Bill of materials
  */
+
+const xml2js = require("xml2js"); //rwb27: tried adding XML import
+
 export class Bom {
     public bom: Map<string,number>=new Map<string,number>();  //part-id
 
@@ -127,6 +130,22 @@ export class Brick {
         var t:Brick=this;
         //Copy sub-bricks and functions
         o.functions.forEach(function(ofunc:BrickFunction,index:number){
+            var f:BrickFunction=new BrickFunction();
+            f.copyfrom(ofunc);
+            //t.functions.push(f);
+            f.id=""+index;
+            t.mapFunctions.set(""+index,f);
+        });
+    }
+    copyfromxml(o:any):void{
+        Object.assign(this,o);
+        
+        console.log("contents:",o);    //dump to console (DEBUG)    
+
+        this.functions=<[BrickFunction]>[];
+        var t:Brick=this;
+        //Copy sub-bricks and functions
+        o.function.forEach(function(ofunc:BrickFunction,index:number){
             var f:BrickFunction=new BrickFunction();
             f.copyfrom(ofunc);
             //t.functions.push(f);
@@ -398,4 +417,24 @@ export function docubricksFromJSON(s:string):Project{
     var realproj:Project=new Project();
     realproj.copyfrom(proj);
     return realproj;
+}
+
+export function docubricksFromXML(s:string, callback: (p: Project)=>any ){
+    xml2js.parseString(s, function(err: any, res: any){
+        var proj:Project=new Project();
+
+        //Copy bricks
+        for(let ob of res.docubricks.brick){
+            console.log("copying:",ob.name);    //dump to console (DEBUG)
+            var b:Brick=new Brick();
+            b.copyfromxml(ob);
+            this.bricks.push(b);
+        };        
+
+        proj.bricks = res.docubricks.brick;
+        console.log(JSON.stringify(proj.bricks, null, 4));    //dump to console (DEBUG)
+        var realproj:Project=new Project();
+        realproj.copyfrom(proj);
+        callback(realproj); //I really hate JS callbacks :(
+    });
 }
