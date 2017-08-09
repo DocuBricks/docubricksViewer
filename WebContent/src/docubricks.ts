@@ -24,6 +24,17 @@ function stringFromXML(tag: string, xml: XMLDict, def: string=""): string{
         console.log("Missing property: "+tag+" error: "+e);
     }
 }
+function attributeFromXML(key: string, xml: XMLDict, def: string=""): string{
+    //extract the value of an attribute from a parsed XML element
+    if(xml.$[key] == null && def != null){
+        return def;
+    }
+    try{
+        return <string>xml.$[key];
+    }catch(e){
+        console.log("Missing property: "+key+" error: "+e);
+    }
+}
 function arrayFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, xml: XMLDict, allowEmpty: boolean=true): Array<T>{
     //Copy all XML tags with a given tag name ("key") into an array, converting each to the given type
     if(xml[tag] == null){ //check for, and deal with, the case where there are no tags.
@@ -65,27 +76,6 @@ function stringArrayFromXML(tag: string, xml: XMLDict, allowEmpty: boolean=true)
     }
 }
 
-class DocubricksXMLElement {
-    [key:string]:any; //override "no explicit any" (is this a collossally bad idea??)
-    public copyfromxml(xml:any):void{  
-
-        //Copy simple properties in directly
-        for (var key in xml){
-            try{
-                if(xml[key].length == 1){this[key] = <string>xml[key][0]; }
-                console.log("Property:", key, "=", this[key]);
-            }catch(e){
-                try{
-                    console.log("Plural property", this[key + "s"]);
-                //this[key + "s"] = xml[key]; //OK for string properties
-                }catch(e){
-                    console.log("Failed to copy in property", key)
-                }
-            }
-        }
-    }
-}
-
 export class Bom {
     public bom: Map<string,number>=new Map<string,number>();  //part-id
 
@@ -122,7 +112,7 @@ export class Bom {
 /**
  * One author
  */
-export class Author {
+export class Author implements CopiableFromXML{
     public id: string; //Secondary copy
     
     public name: string;
@@ -136,7 +126,13 @@ export class Author {
     copyfrom(o:Author):void{
         Object.assign(this,o);
     }
-
+    copyFromXML(xml: XMLDict): void{
+        this.id = stringFromXML("id", xml); //do I want to do this??
+        this.name = stringFromXML("name", xml);
+        this.email = stringFromXML("email", xml);
+        this.orcid = stringFromXML("orcid", xml);
+        this.affiliation = stringFromXML("affiliation", xml);
+    }
 }
 
 /**
@@ -151,7 +147,7 @@ export class Brick implements CopiableFromXML{
     public license: string;
     public files: MediaFile[];
     public authors: string[]; //RWB27 changed this from [string] because the former implies only ever one author??
-    public functions: [BrickFunction];  //should not be used after import
+    public functions: BrickFunction[];  //should not be used after import //changed from [bf] by rwb27
     public mapFunctions:Map<string,BrickFunction>=new Map<string,BrickFunction>();
     public instructions: StepByStepInstruction[];
 
@@ -228,7 +224,7 @@ export class Brick implements CopiableFromXML{
         this.notes = stringFromXML("notes", xml);
         this.license = stringFromXML("license", xml);
         this.authors = stringArrayFromXML("authors", xml);
-        //this.functions = arrayFromXML(BrickFunction, "function", xml);
+        this.functions = arrayFromXML(BrickFunction, "function", xml);
         //this.instructions = arrayFromXML(StepByStepInstruction, "step", xml);
         //TODO: mapFunctions
     }
@@ -238,7 +234,7 @@ export class Brick implements CopiableFromXML{
 /**
  * One function for a brick
  */
-export class BrickFunction {
+export class BrickFunction implements CopiableFromXML{
     public id: string;
 
     public description: string;
@@ -256,9 +252,16 @@ export class BrickFunction {
             this.implementations.push(f);
         });
     }
+    copyFromXML(xml: XMLDict): void{
+        this.id = stringFromXML("id", xml); //do I want to do this??
+        this.description = stringFromXML("description", xml);
+        this.designator = stringFromXML("designator", xml);
+        this.quantity = stringFromXML("quantity", xml);
+        this.implementations = arrayFromXML(FunctionImplementation, "implementation", xml);
+    }
 }
 
-export class FunctionImplementation {
+export class FunctionImplementation implements CopiableFromXML{
     public type: string; //"part" or "brick"
     public id: string;
     public quantity: number;
@@ -282,19 +285,28 @@ export class FunctionImplementation {
         this.quantity=oi.quantity;
         this.type=oi.type;*/
     }
+
+    copyFromXML(xml: XMLDict): void{
+        this.id = stringFromXML("id", xml); //do I want to do this??
+        this.type = stringFromXML("type", xml);
+        this.quantity = Number(stringFromXML("quantity", xml));
+    }
 }
 
 /**
  * One associated file
  */
-export class MediaFile {
+export class MediaFile implements CopiableFromXML{
     public url: string;
+    copyFromXML(xml: XMLDict): void{
+        this.url = stringFromXML("url", xml, null);
+    }
 }
 
 /**
  * One part
  */
-export class Part {
+export class Part implements CopiableFromXML{
     public id: string; //secondary
     
     public name: string;
@@ -315,31 +327,63 @@ export class Part {
     copyfrom(o:Part):void{
         Object.assign(this,o);
     }
+    copyFromXML(xml: XMLDict): void{
+        this.id = stringFromXML("id", xml);
+        this.name = stringFromXML("type", xml);
+        this.description = stringFromXML("description", xml);
+        this.supplier = stringFromXML("supplier", xml);
+        this.supplier_part_num = stringFromXML("supplier_part_num", xml);
+        this.manufacturer_part_num = stringFromXML("manufacturer_part_num", xml);
+        this.url = stringFromXML("url", xml);
+        this.material_amount = stringFromXML("material_amount", xml);
+        this.material_unit = stringFromXML("material_unit", xml);
+        this.files = arrayFromXML(MediaFile, "files", xml);
+        if(xml['manufacturing_instruction'] != null){
+            this.manufacturing_instruction = new StepByStepInstruction();
+            this.manufacturing_instruction.copyFromXML(xml["manufacturing_instruction"][0] as XMLDict);
+        }
+    }
 }
 
 /**
  * One step-by-step instruction
  */
-export class StepByStepInstruction {
+export class StepByStepInstruction implements CopiableFromXML{
     public name: string;
     public steps: AssemblyStep[];
+
+    copyFromXML(xml: XMLDict): void{
+        this.name = stringFromXML("type", xml);
+        this.steps = arrayFromXML(AssemblyStep, "manufacturing_instruction", xml);
+    }
 }
 
 /**
  * One assembly step (or any instruction step)
  */
-export class AssemblyStep {
+export class AssemblyStep implements CopiableFromXML{
     public description: string;
     public files: MediaFile[];
     public components: AssemblyStepComponent[];
+
+    copyFromXML(xml: XMLDict): void{
+        this.description = stringFromXML("description", xml);
+        this.files = arrayFromXML(MediaFile, "files", xml);
+        this.components = arrayFromXML(AssemblyStepComponent, "component", xml);
+    }
 }
 
 /**
  * reference - to be removed?
  */
-export class AssemblyStepComponent {
+export class AssemblyStepComponent implements CopiableFromXML{
     public quantity: string;
     public id: string;
+
+    copyFromXML(xml: XMLDict): void{
+        this.quantity = stringFromXML("quantity", xml);
+        this.id = stringFromXML("id", xml);
+    }
 }
 
 
@@ -354,7 +398,7 @@ export class BrickTree{
 /**
  * One docubricks project
  */
-export class Project {
+export class Project implements CopiableFromXML{
     public bricks:Brick[]=[];
     public parts:Part[]=[];
     public authors:Author[]=[];
@@ -472,6 +516,11 @@ export class Project {
         
         
     }
+    public copyFromXML(xml: XMLDict): void{
+        this.bricks = arrayFromXML(Brick, "brick", xml);
+        this.parts = arrayFromXML(Part, "physical_part", xml);
+        this.authors = arrayFromXML(Author, "author", xml);
+    }
 
     /**
      * Get the name of the project - use the name of the root brick
@@ -503,8 +552,13 @@ export function docubricksFromXML(s:string, callback: (p: Project)=>any ){
         var proj:Project=new Project();
 
         //Copy bricks
-        proj.bricks = arrayFromXML(Brick, "brick", res.docubricks);
+        proj.copyFromXML(res.docubricks);
 
         callback(proj); //I really hate JS callbacks :(
     });
 }
+
+
+
+// WEBPACK FOOTER //
+// ./src/docubricks.ts
