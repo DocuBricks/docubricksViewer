@@ -4,6 +4,27 @@
 
 const xml2js = require("xml2js"); //rwb27: tried adding XML import
 
+class DocubricksXMLElement {
+    [key:string]:any; //override "no explicit any" (is this a collossally bad idea??)
+    public copyfromxml(xml:any):void{  
+
+        //Copy simple properties in directly
+        for (var key in xml){
+            try{
+                if(xml[key].length == 1){this[key] = <string>xml[key][0]; }
+                console.log("Property:", key, "=", this[key]);
+            }catch(e){
+                try{
+                    console.log("Plural property", this[key + "s"]);
+                //this[key + "s"] = xml[key]; //OK for string properties
+                }catch(e){
+                    console.log("Failed to copy in property", key)
+                }
+            }
+        }
+    }
+}
+
 export class Bom {
     public bom: Map<string,number>=new Map<string,number>();  //part-id
 
@@ -60,7 +81,7 @@ export class Author {
 /**
  * One brick
  */
-export class Brick {
+export class Brick extends DocubricksXMLElement{
     public id:string; //Secondary store    
     public name: string;
     public abstract: string;
@@ -137,7 +158,7 @@ export class Brick {
             t.mapFunctions.set(""+index,f);
         });
     }
-    copyfromxml(o:any):void{
+/*    copyfromxml(o:any):void{
         Object.assign(this,o);
         
         console.log("contents:",o);    //dump to console (DEBUG)    
@@ -152,7 +173,7 @@ export class Brick {
             f.id=""+index;
             t.mapFunctions.set(""+index,f);
         });
-    }
+    }*/
 
 }
 
@@ -425,14 +446,14 @@ export function docubricksFromXML(s:string, callback: (p: Project)=>any ){
 
         //Copy bricks
         for(let ob of res.docubricks.brick){
-            console.log("copying:",ob.name);    //dump to console (DEBUG)
+            console.log("copying:",ob.name[0]);    //dump to console (DEBUG)
             var b:Brick=new Brick();
             b.copyfromxml(ob);
-            this.bricks.push(b);
+            //this.bricks.push(b);
         };        
 
         proj.bricks = res.docubricks.brick;
-        console.log(JSON.stringify(proj.bricks, null, 4));    //dump to console (DEBUG)
+        //console.log(JSON.stringify(proj.bricks, null, 4));    //dump to console (DEBUG)
         var realproj:Project=new Project();
         realproj.copyfrom(proj);
         callback(realproj); //I really hate JS callbacks :(
