@@ -7,46 +7,93 @@ const xml2js = require("xml2js"); //rwb27: tried adding XML import
 interface CopiableFromXML {
     copyFromXML(xml: XMLDict): void;
 }
-interface XMLDict{
-    [key: string]: Array<string|XMLDict>;
+interface XMLAttributes{
+    [key: string]: string;
 }
-function stringFromXML(tag: string, xml: XMLDict, def: string=""): string{
-    //extract the value of a tag from a parsed XML string
-    if(xml[tag] == null && def != null){
-        return def;
+interface XMLDict{
+    [key: string]: Array<string|XMLDict> | XMLAttributes;
+}
+interface XMLDictForAttributeAccess{
+    // The value returned by the xml2js parser is basically an XMLDict
+    // as defined above, but there is one special attribute $ that has a
+    // different type.  This plays merry hell with the type...
+    // Using this class instead is a dirty but functional way of getting
+    // around that problem, wihtout copying a lot of data.
+    $: XMLAttributes;
+}
+function tagsFromXML(tag: string, xml: XMLDict, allowEmpty: boolean=true): Array<string|XMLDict>{
+    if(tag=="$"){
+        throw(Error("Error: the $ tag is reserved, you can't use it."));
     }
-    if(xml[tag].length > 1){
+    if(xml[tag] == null){
+        if(allowEmpty){
+            return new Array<string|XMLDict>();
+        }else{
+            throw(Error("Error: there were no '"+tag+"' tags, and they are required."));
+        }
+    }
+    return xml[tag] as Array<string|XMLDict>;
+}
+function tagFromXML(tag: string, xml: XMLDict): XMLDict|string|null{
+    //extract the value of a tag from a parsed XML string
+    let tags = tagsFromXML(tag, xml);
+    if(tags.length > 1){
         throw Error("Attempted to extract "+tag+" from XML but multiple tags existed");
     }
-    try{
-        return <string>xml[tag][0];
-    }catch(e){
-        console.log("Missing property: "+tag+" error: "+e);
+    if(tags.length < 0){
+        return null;
     }
+    return tags[0];
 }
-function attributeFromXML(key: string, xml: XMLDict, def: string=""): string{
+function stringFromXML(tag: string, xml: XMLDict, def: string|null=""): string{
+    let element = tagFromXML(tag, xml);
+    if(element == null){
+        if(def != null){
+            return def;
+        }else{
+            throw(Error("Error: there was no '"+tag+"' tag, and one is required."));
+        }
+    }
+    return element as string;
+}
+function objectFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, xml: XMLDict, allowEmpty: boolean=true):T|null{
+    let element = tagFromXML(tag, xml);
+    if(element == null){
+        if(allowEmpty){
+            return null
+        }else{
+            throw(Error("Error: there was no '"+tag+"' tag, and one is required."));
+        }
+    }
+    let obj = new c();
+    obj.copyFromXML(element as XMLDict);
+    return obj;
+}
+function attributeFromXML(key: string, xml: XMLDict, def: string|null=""): string{
     //extract the value of an attribute from a parsed XML element
-    if(xml.$[key] == null && def != null){
-        return def;
+    let attrs = xml.$ as XMLAttributes;
+    if(attrs[key] == null){
+        if(def == null){
+            throw(Error("The '"+key+"' attribute was missing, and that's not allowed."));
+        }else{
+            return def;
+        }
     }
-    try{
-        return <string>xml.$[key];
-    }catch(e){
-        console.log("Missing property: "+key+" error: "+e);
-    }
+    return attrs[key];
+}
+function idFromXML(xml: XMLDict): string{
+    return attributeFromXML("id", xml, null);
 }
 function arrayFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, xml: XMLDict, allowEmpty: boolean=true): Array<T>{
     //Copy all XML tags with a given tag name ("key") into an array, converting each to the given type
-    if(xml[tag] == null){ //check for, and deal with, the case where there are no tags.
-        if(allowEmpty){
-            return [] as Array<T>;
-        }else{
-            throw Error("There were no "+tag+" tags and empty arrays are not allowed.")
-        }
+    let tags = tagsFromXML(tag, xml, allowEmpty);
+    if(tags.length == 0 && !allowEmpty){
+        throw(Error("There were no '"+tag+"' tags, and that's not allowed."));
+        //NB if allowEmpty is true, we'll just return an empty array.
     }
     try{
         let objects = new Array<T>();
-        for(let element of xml[tag]){
+        for(let element of tags){
             let o = new c();
             o.copyFromXML(element as XMLDict);
             objects.push(o);
@@ -58,19 +105,14 @@ function arrayFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, xm
 }
 function stringArrayFromXML(tag: string, xml: XMLDict, allowEmpty: boolean=true): Array<string>{
     // Return an array with the text values of all the tags of a given type
-    if(xml[tag] == null){ //check for, and deal with, the case where there are no tags.
-        if(allowEmpty){
-            return [] as Array<string>;
-        }else{
-            throw Error("There were no "+tag+" tags and empty arrays are not allowed.")
-        }
-    }
+    let tags = tagsFromXML(tag, xml, allowEmpty);
     try{
-        let objects = new Array<string>();
+        /*let objects = new Array<string>();
         for(let element of xml[tag]){
             objects.push(element as string);
         }
-        return objects;
+        return objects;*/
+        return tags as Array<string>;
     }catch(e){
         console.log("Missing property: "+tag+" error: "+e);
     }
@@ -127,7 +169,7 @@ export class Author implements CopiableFromXML{
         Object.assign(this,o);
     }
     copyFromXML(xml: XMLDict): void{
-        this.id = stringFromXML("id", xml); //do I want to do this??
+        this.id = idFromXML(xml); //do I want to do this??
         this.name = stringFromXML("name", xml);
         this.email = stringFromXML("email", xml);
         this.orcid = stringFromXML("orcid", xml);
@@ -217,7 +259,7 @@ export class Brick implements CopiableFromXML{
     }
 
     copyFromXML(xml: XMLDict): void{
-        this.id = stringFromXML("id", xml); //do I want to do this??
+        this.id = idFromXML(xml); //do I want to do this??
         this.name = stringFromXML("name", xml);
         this.abstract = stringFromXML("abstract", xml);
         this.long_description = stringFromXML("long_description", xml);
@@ -225,7 +267,8 @@ export class Brick implements CopiableFromXML{
         this.license = stringFromXML("license", xml);
         this.authors = stringArrayFromXML("authors", xml);
         this.functions = arrayFromXML(BrickFunction, "function", xml);
-        //this.instructions = arrayFromXML(StepByStepInstruction, "step", xml);
+        this.instructions = arrayFromXML(StepByStepInstruction, "assembly_instruction", xml);
+        this.files = mediaFilesFromXML(xml);
         //TODO: mapFunctions
     }
 
@@ -253,7 +296,7 @@ export class BrickFunction implements CopiableFromXML{
         });
     }
     copyFromXML(xml: XMLDict): void{
-        this.id = stringFromXML("id", xml); //do I want to do this??
+        this.id = idFromXML(xml); //do I want to do this??
         this.description = stringFromXML("description", xml);
         this.designator = stringFromXML("designator", xml);
         this.quantity = stringFromXML("quantity", xml);
@@ -287,7 +330,7 @@ export class FunctionImplementation implements CopiableFromXML{
     }
 
     copyFromXML(xml: XMLDict): void{
-        this.id = stringFromXML("id", xml); //do I want to do this??
+        this.id = idFromXML(xml); //do I want to do this??
         this.type = stringFromXML("type", xml);
         this.quantity = Number(stringFromXML("quantity", xml));
     }
@@ -299,8 +342,18 @@ export class FunctionImplementation implements CopiableFromXML{
 export class MediaFile implements CopiableFromXML{
     public url: string;
     copyFromXML(xml: XMLDict): void{
-        this.url = stringFromXML("url", xml, null);
+        this.url = attributeFromXML("url", xml, null);
     }
+}
+function mediaFilesFromXML(xml: XMLDict): MediaFile[]{
+    //convenience function for populating files lists from XMLDict
+    let media = tagFromXML("media", xml);
+    return [];
+/*    try{
+        return arrayFromXML(MediaFile, "file", media as XMLDict);
+    }catch(e){
+        return [];
+    }*/
 }
 
 /**
@@ -328,7 +381,7 @@ export class Part implements CopiableFromXML{
         Object.assign(this,o);
     }
     copyFromXML(xml: XMLDict): void{
-        this.id = stringFromXML("id", xml);
+        this.id = idFromXML(xml);
         this.name = stringFromXML("type", xml);
         this.description = stringFromXML("description", xml);
         this.supplier = stringFromXML("supplier", xml);
@@ -337,11 +390,8 @@ export class Part implements CopiableFromXML{
         this.url = stringFromXML("url", xml);
         this.material_amount = stringFromXML("material_amount", xml);
         this.material_unit = stringFromXML("material_unit", xml);
-        this.files = arrayFromXML(MediaFile, "files", xml);
-        if(xml['manufacturing_instruction'] != null){
-            this.manufacturing_instruction = new StepByStepInstruction();
-            this.manufacturing_instruction.copyFromXML(xml["manufacturing_instruction"][0] as XMLDict);
-        }
+        this.files = mediaFilesFromXML(xml);
+        this.manufacturing_instruction = objectFromXML(StepByStepInstruction, "manufacturing_instruction", xml);
     }
 }
 
@@ -354,7 +404,7 @@ export class StepByStepInstruction implements CopiableFromXML{
 
     copyFromXML(xml: XMLDict): void{
         this.name = stringFromXML("type", xml);
-        this.steps = arrayFromXML(AssemblyStep, "manufacturing_instruction", xml);
+        this.steps = arrayFromXML(AssemblyStep, "step", xml);
     }
 }
 
@@ -368,8 +418,9 @@ export class AssemblyStep implements CopiableFromXML{
 
     copyFromXML(xml: XMLDict): void{
         this.description = stringFromXML("description", xml);
-        this.files = arrayFromXML(MediaFile, "files", xml);
+        this.files = mediaFilesFromXML(xml);
         this.components = arrayFromXML(AssemblyStepComponent, "component", xml);
+        console.log("Added a step with "+this.files.length+" media files")
     }
 }
 
@@ -382,7 +433,7 @@ export class AssemblyStepComponent implements CopiableFromXML{
 
     copyFromXML(xml: XMLDict): void{
         this.quantity = stringFromXML("quantity", xml);
-        this.id = stringFromXML("id", xml);
+        this.id = idFromXML(xml);
     }
 }
 

@@ -351,10 +351,12 @@ export class InstructionList extends React.Component<InstructionListProps, undef
          key="instrBrick"+brick.id+"_instr"+instr.name;
      else
          key="instrPart"+this.props.part.id+"_instr"+instr.name;
+     console.log("rendering instruction list "+key);
 
      var snodes:JSX.Element[]=[];
      var curstep:number=1;
      for(let step of instr.steps){
+         console.log("starting to process a step");
          var stepkey=key+"_"+curstep;
          snodes.push(<div className="step" key={stepkey}>
            <hr/>
@@ -370,6 +372,7 @@ export class InstructionList extends React.Component<InstructionListProps, undef
          snodes.push(<div key={stepkey+"_end"} style={divclear}/>);
          curstep++;
      }
+     console.log("finished processing steps:",snodes);
      var instrName:string = instr.name || '';
      var instrtitle:string = "Instruction: "+instrName;
      if(instr.name=="assembly")
