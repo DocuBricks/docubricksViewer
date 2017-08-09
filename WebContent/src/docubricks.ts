@@ -439,8 +439,8 @@ export class AssemblyStep implements CopiableFromXML{
 
     copyFromXML(xml: XMLDict): void{
         this.description = stringFromXML("description", xml);
-        this.files = [];//mediaFilesFromXML(xml);
-        this.components = [];//arrayFromXML(AssemblyStepComponent, "component", xml);
+        this.files = mediaFilesFromXML(xml);
+        this.components = arrayFromXML(AssemblyStepComponent, "component", xml);
     }
 }
 
