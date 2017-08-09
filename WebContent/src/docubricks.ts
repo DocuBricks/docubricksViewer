@@ -54,7 +54,12 @@ function stringFromXML(tag: string, xml: XMLDict, def: string|null=""): string{
             throw(Error("Error: there was no '"+tag+"' tag, and one is required."));
         }
     }
-    return element as string;
+    if(typeof element == "string"){
+        return element as string;
+    }else{
+        console.log("Warning: tried to extract a string from tag <"+tag+"> in XML snippet:\n",xml,"Got something else instead: ",element);
+        throw(Error("Tried to retrieve a string from tag <"+tag+"> but it wasn't a string!"));
+    }
 }
 function objectFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, xml: XMLDict, allowEmpty: boolean=true):T|null{
     let element = tagFromXML(tag, xml);
@@ -72,14 +77,15 @@ function objectFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, x
 function attributeFromXML(key: string, xml: XMLDict, def: string|null=""): string{
     //extract the value of an attribute from a parsed XML element
     let attrs = xml.$ as XMLAttributes;
-    if(attrs[key] == null){
+    try{
+        return attrs[key];
+    }catch(e){ //I should probably check this value more carefully...
         if(def == null){
             throw(Error("The '"+key+"' attribute was missing, and that's not allowed."));
         }else{
             return def;
         }
     }
-    return attrs[key];
 }
 function idFromXML(xml: XMLDict): string{
     return attributeFromXML("id", xml, null);
@@ -269,7 +275,9 @@ export class Brick implements CopiableFromXML{
         this.functions = arrayFromXML(BrickFunction, "function", xml);
         this.instructions = arrayFromXML(StepByStepInstruction, "assembly_instruction", xml);
         this.files = mediaFilesFromXML(xml);
-        //TODO: mapFunctions
+        for(let i in this.functions){
+            this.mapFunctions.set(""+i, this.functions[i]);
+        }
     }
 
 }
@@ -331,7 +339,10 @@ export class FunctionImplementation implements CopiableFromXML{
 
     copyFromXML(xml: XMLDict): void{
         this.id = idFromXML(xml); //do I want to do this??
-        this.type = stringFromXML("type", xml);
+        this.type = attributeFromXML("type", xml, null);
+        if(this.type=="physical_part"){
+            this.type="part";
+        }
         this.quantity = Number(stringFromXML("quantity", xml));
     }
 }
@@ -382,8 +393,11 @@ export class Part implements CopiableFromXML{
     }
     copyFromXML(xml: XMLDict): void{
         this.id = idFromXML(xml);
-        this.name = stringFromXML("type", xml);
+        this.name = stringFromXML("name", xml);
         this.description = stringFromXML("description", xml);
+        if(this.name.length==0){
+            this.name = this.description;
+        }
         this.supplier = stringFromXML("supplier", xml);
         this.supplier_part_num = stringFromXML("supplier_part_num", xml);
         this.manufacturer_part_num = stringFromXML("manufacturer_part_num", xml);
@@ -403,8 +417,15 @@ export class StepByStepInstruction implements CopiableFromXML{
     public steps: AssemblyStep[];
 
     copyFromXML(xml: XMLDict): void{
-        this.name = stringFromXML("type", xml);
-        this.steps = arrayFromXML(AssemblyStep, "step", xml);
+        this.name = attributeFromXML("name", xml);
+        this.steps = arrayFromXML(AssemblyStep, "step", xml); //load correctly from XML file
+        //this.steps = [{components:[], description:"test step", files:[]}];//this works (untyped objects)
+        
+        /*let teststep = new AssemblyStep();
+        teststep.files = [];
+        teststep.components = [];
+        teststep.description = "test step with correct type";
+        this.steps = [teststep];//arrayFromXML(AssemblyStep, "step", xml);*/
     }
 }
 
@@ -418,9 +439,8 @@ export class AssemblyStep implements CopiableFromXML{
 
     copyFromXML(xml: XMLDict): void{
         this.description = stringFromXML("description", xml);
-        this.files = mediaFilesFromXML(xml);
-        this.components = arrayFromXML(AssemblyStepComponent, "component", xml);
-        console.log("Added a step with "+this.files.length+" media files")
+        this.files = [];//mediaFilesFromXML(xml);
+        this.components = [];//arrayFromXML(AssemblyStepComponent, "component", xml);
     }
 }
 
@@ -474,6 +494,9 @@ export class Project implements CopiableFromXML{
     }
     
     public getPartByName(id:string):Part{
+        if(this.mapParts.get(id) == null){
+            console.log("BAD PART ID: "+id);
+        }
         return this.mapParts.get(id);
     }
     
@@ -568,9 +591,20 @@ export class Project implements CopiableFromXML{
         
     }
     public copyFromXML(xml: XMLDict): void{
+        console.log("Parsing bricks");
         this.bricks = arrayFromXML(Brick, "brick", xml);
+        console.log("Parsing parts");
         this.parts = arrayFromXML(Part, "physical_part", xml);
+        console.log("Parsing authors");
         this.authors = arrayFromXML(Author, "author", xml);
+        console.log("Parsed project, building maps...");
+        for(let p of this.parts){
+            this.mapParts.set(p.id,p);
+        }
+        for(let a of this.authors){
+            this.mapAuthors.set(a.id,a);
+        }
+        console.log("Project successfully reconstructed from XML")
     }
 
     /**
@@ -595,6 +629,7 @@ export function docubricksFromJSON(s:string):Project{
 
     var realproj:Project=new Project();
     realproj.copyfrom(proj);
+    console.log("successfully created docubricks project ",realproj);
     return realproj;
 }
 
@@ -604,6 +639,7 @@ export function docubricksFromXML(s:string, callback: (p: Project)=>any ){
 
         //Copy bricks
         proj.copyFromXML(res.docubricks);
+        console.log("successfully created docubricks project ",proj);
 
         callback(proj); //I really hate JS callbacks :(
     });
