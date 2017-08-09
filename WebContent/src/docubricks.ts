@@ -4,6 +4,67 @@
 
 const xml2js = require("xml2js"); //rwb27: tried adding XML import
 
+interface CopiableFromXML {
+    copyFromXML(xml: XMLDict): void;
+}
+interface XMLDict{
+    [key: string]: Array<string|XMLDict>;
+}
+function stringFromXML(tag: string, xml: XMLDict, def: string=""): string{
+    //extract the value of a tag from a parsed XML string
+    if(xml[tag] == null && def != null){
+        return def;
+    }
+    if(xml[tag].length > 1){
+        throw Error("Attempted to extract "+tag+" from XML but multiple tags existed");
+    }
+    try{
+        return <string>xml[tag][0];
+    }catch(e){
+        console.log("Missing property: "+tag+" error: "+e);
+    }
+}
+function arrayFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, xml: XMLDict, allowEmpty: boolean=true): Array<T>{
+    //Copy all XML tags with a given tag name ("key") into an array, converting each to the given type
+    if(xml[tag] == null){ //check for, and deal with, the case where there are no tags.
+        if(allowEmpty){
+            return [] as Array<T>;
+        }else{
+            throw Error("There were no "+tag+" tags and empty arrays are not allowed.")
+        }
+    }
+    try{
+        let objects = new Array<T>();
+        for(let element of xml[tag]){
+            let o = new c();
+            o.copyFromXML(element as XMLDict);
+            objects.push(o);
+        }
+        return objects;
+    }catch(e){
+        console.log("Missing property: "+tag+" error: "+e);
+    }
+}
+function stringArrayFromXML(tag: string, xml: XMLDict, allowEmpty: boolean=true): Array<string>{
+    // Return an array with the text values of all the tags of a given type
+    if(xml[tag] == null){ //check for, and deal with, the case where there are no tags.
+        if(allowEmpty){
+            return [] as Array<string>;
+        }else{
+            throw Error("There were no "+tag+" tags and empty arrays are not allowed.")
+        }
+    }
+    try{
+        let objects = new Array<string>();
+        for(let element of xml[tag]){
+            objects.push(element as string);
+        }
+        return objects;
+    }catch(e){
+        console.log("Missing property: "+tag+" error: "+e);
+    }
+}
+
 class DocubricksXMLElement {
     [key:string]:any; //override "no explicit any" (is this a collossally bad idea??)
     public copyfromxml(xml:any):void{  
@@ -81,7 +142,7 @@ export class Author {
 /**
  * One brick
  */
-export class Brick extends DocubricksXMLElement{
+export class Brick implements CopiableFromXML{
     public id:string; //Secondary store    
     public name: string;
     public abstract: string;
@@ -89,7 +150,7 @@ export class Brick extends DocubricksXMLElement{
     public notes: string;
     public license: string;
     public files: MediaFile[];
-    public authors: [string];
+    public authors: string[]; //RWB27 changed this from [string] because the former implies only ever one author??
     public functions: [BrickFunction];  //should not be used after import
     public mapFunctions:Map<string,BrickFunction>=new Map<string,BrickFunction>();
     public instructions: StepByStepInstruction[];
@@ -158,22 +219,19 @@ export class Brick extends DocubricksXMLElement{
             t.mapFunctions.set(""+index,f);
         });
     }
-/*    copyfromxml(o:any):void{
-        Object.assign(this,o);
-        
-        console.log("contents:",o);    //dump to console (DEBUG)    
 
-        this.functions=<[BrickFunction]>[];
-        var t:Brick=this;
-        //Copy sub-bricks and functions
-        o.function.forEach(function(ofunc:BrickFunction,index:number){
-            var f:BrickFunction=new BrickFunction();
-            f.copyfrom(ofunc);
-            //t.functions.push(f);
-            f.id=""+index;
-            t.mapFunctions.set(""+index,f);
-        });
-    }*/
+    copyFromXML(xml: XMLDict): void{
+        this.id = stringFromXML("id", xml); //do I want to do this??
+        this.name = stringFromXML("name", xml);
+        this.abstract = stringFromXML("abstract", xml);
+        this.long_description = stringFromXML("long_description", xml);
+        this.notes = stringFromXML("notes", xml);
+        this.license = stringFromXML("license", xml);
+        this.authors = stringArrayFromXML("authors", xml);
+        //this.functions = arrayFromXML(BrickFunction, "function", xml);
+        //this.instructions = arrayFromXML(StepByStepInstruction, "step", xml);
+        //TODO: mapFunctions
+    }
 
 }
 
@@ -445,17 +503,8 @@ export function docubricksFromXML(s:string, callback: (p: Project)=>any ){
         var proj:Project=new Project();
 
         //Copy bricks
-        for(let ob of res.docubricks.brick){
-            console.log("copying:",ob.name[0]);    //dump to console (DEBUG)
-            var b:Brick=new Brick();
-            b.copyfromxml(ob);
-            //this.bricks.push(b);
-        };        
+        proj.bricks = arrayFromXML(Brick, "brick", res.docubricks);
 
-        proj.bricks = res.docubricks.brick;
-        //console.log(JSON.stringify(proj.bricks, null, 4));    //dump to console (DEBUG)
-        var realproj:Project=new Project();
-        realproj.copyfrom(proj);
-        callback(realproj); //I really hate JS callbacks :(
+        callback(proj); //I really hate JS callbacks :(
     });
 }
