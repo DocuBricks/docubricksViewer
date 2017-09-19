@@ -359,12 +359,12 @@ export class MediaFile implements CopiableFromXML{
 function mediaFilesFromXML(xml: XMLDict): MediaFile[]{
     //convenience function for populating files lists from XMLDict
     let media = tagFromXML("media", xml);
-    return [];
-/*    try{
+    //return [];
+    //try{
         return arrayFromXML(MediaFile, "file", media as XMLDict);
-    }catch(e){
-        return [];
-    }*/
+    //}catch(e){
+    //    return [];
+    //}
 }
 
 /**
