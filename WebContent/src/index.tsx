@@ -8,6 +8,19 @@ const request = require('browser-request');
 
 //alert(getQueryStringValue("id")); 
 
+function getQueryVariable(variable:string){
+	// retrieve a query variable from the URL (used to specify the URL on the command line)
+	// courtesy of CHRIS COYIER at https://css-tricks.com/snippets/javascript/get-url-variables/
+	var query = window.location.search.substring(1);
+	var vars = query.split("&");
+	for (var i=0;i<vars.length;i++) {
+		   var pair = vars[i].split("=");
+		   if(pair[0] == variable){return pair[1];}
+	}
+	return(''); // we return an empty string rather than false to avoid type issues.
+	// NB empty string will evaluate to false if cast to boolean.
+}
+
 if(document.getElementById("hiddendata")){
 	// the XML has been converted to JSON and base64 encoded in the HTML document.
 	// we assume the supporting files are in ./project/ (the default base_url defined in docubricks.ts)
@@ -20,10 +33,15 @@ if(document.getElementById("hiddendata")){
         document.getElementById("example")
     );
 }
-if(document.getElementById("docubricks_xml_url")){
+if(document.getElementById("docubricks_xml_url") || getQueryVariable("docubricks_xml_url")){
 	// We use an HTTP request to retrieve the XML from a URL, which works well for e.g. GitHub.
-    var url = document.getElementById("docubricks_xml_url").textContent;
-    document.getElementById("docubricks_xml_url").textContent="";
+    var url = "";
+	if(document.getElementById("docubricks_xml_url")){
+		url = document.getElementById("docubricks_xml_url").textContent;
+		document.getElementById("docubricks_xml_url").textContent="";
+	}else{
+		url = decodeURIComponent(getQueryVariable("docubricks_xml_url"));
+	}
 	var base_url = url.split('/').slice(0,-1).join('/') + '/'; // the DocuBricks root folder
 	// paths for images and other files in the DocuBricks project should be given relative to the docubricks root folder
 
