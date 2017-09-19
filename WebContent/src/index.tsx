@@ -33,13 +33,11 @@ if(document.getElementById("hiddendata")){
         document.getElementById("example")
     );
 }
-if(document.getElementById("docubricks_xml_url") || getQueryVariable("docubricks_xml_url")){
+if(document.getElementById("docubricks_xml_url")){
 	// We use an HTTP request to retrieve the XML from a URL, which works well for e.g. GitHub.
-    var url = "";
-	if(document.getElementById("docubricks_xml_url")){
-		url = document.getElementById("docubricks_xml_url").textContent;
-		document.getElementById("docubricks_xml_url").textContent="";
-	}else{
+    var url = document.getElementById("docubricks_xml_url").textContent;
+	document.getElementById("docubricks_xml_url").textContent="";
+	if(url == "docubricks_xml_url will be read from the query string."){
 		url = decodeURIComponent(getQueryVariable("docubricks_xml_url"));
 	}
 	var base_url = url.split('/').slice(0,-1).join('/') + '/'; // the DocuBricks root folder
