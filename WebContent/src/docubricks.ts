@@ -1,16 +1,20 @@
 /**
- * Bill of materials
+ * Deserialisation from XML
+ * 
+ * The following methods tidy up the common code required to create objects from their XML representation.
  */
-
 const xml2js = require("xml2js"); //rwb27: tried adding XML import
 
 interface CopiableFromXML {
+	// All the DocuBricks types should implement this so they can be reconstituted from XML
     copyFromXML(xml: XMLDict): void;
 }
 interface XMLAttributes{
+	// This holds the attributes of an XML tag (it's enabled by casting the structure to be an XMLDictForAttributeAccess
     [key: string]: string;
 }
 interface XMLDict{
+	// This is used to contain the results of parsing XML files with the xml2js module
     [key: string]: Array<string|XMLDict> | XMLAttributes;
 }
 interface XMLDictForAttributeAccess{
@@ -22,6 +26,7 @@ interface XMLDictForAttributeAccess{
     $: XMLAttributes;
 }
 function tagsFromXML(tag: string, xml: XMLDict, allowEmpty: boolean=true): Array<string|XMLDict>{
+	// Retrieve the contents of the tags with a given name (tag) from the supplied XML
     if(tag=="$"){
         throw(Error("Error: the $ tag is reserved, you can't use it."));
     }
@@ -35,7 +40,7 @@ function tagsFromXML(tag: string, xml: XMLDict, allowEmpty: boolean=true): Array
     return xml[tag] as Array<string|XMLDict>;
 }
 function tagFromXML(tag: string, xml: XMLDict): XMLDict|string|null{
-    //extract the value of a tag from a parsed XML string
+    //extract the value of a tag from a parsed XML string - there should not be >1 tag present with that name.
     let tags = tagsFromXML(tag, xml);
     if(tags.length > 1){
         throw Error("Attempted to extract "+tag+" from XML but multiple tags existed");
@@ -46,6 +51,7 @@ function tagFromXML(tag: string, xml: XMLDict): XMLDict|string|null{
     return tags[0];
 }
 function stringFromXML(tag: string, xml: XMLDict, def: string|null=""): string{
+	// retrieve the contents of a tag as a string (i.e. the tag shouldn't contain other tags)
     let element = tagFromXML(tag, xml);
     if(element == null){
         if(def != null){
@@ -62,6 +68,7 @@ function stringFromXML(tag: string, xml: XMLDict, def: string|null=""): string{
     }
 }
 function objectFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, xml: XMLDict, allowEmpty: boolean=true):T|null{
+	// restore XML tags to objects, given the constructor of a class that contains the tags.
     let element = tagFromXML(tag, xml);
     if(element == null){
         if(allowEmpty){
@@ -75,7 +82,7 @@ function objectFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, x
     return obj;
 }
 function attributeFromXML(key: string, xml: XMLDict, def: string|null=""): string{
-    //extract the value of an attribute from a parsed XML element
+    // extract the value of an attribute from a parsed XML element
     let attrs = xml.$ as XMLAttributes;
     try{
         return attrs[key];
@@ -88,6 +95,7 @@ function attributeFromXML(key: string, xml: XMLDict, def: string|null=""): strin
     }
 }
 function idFromXML(xml: XMLDict): string{
+	// convenience property to retrieve the id property of a tag
     return attributeFromXML("id", xml, null);
 }
 function arrayFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, xml: XMLDict, allowEmpty: boolean=true): Array<T>{
@@ -123,6 +131,9 @@ function stringArrayFromXML(tag: string, xml: XMLDict, allowEmpty: boolean=true)
         console.log("Missing property: "+tag+" error: "+e);
     }
 }
+/**
+ * Bill of materials
+ */
 
 export class Bom {
     public bom: Map<string,number>=new Map<string,number>();  //part-id
@@ -476,6 +487,7 @@ export class Project implements CopiableFromXML{
 //    public mapBricks:Map<string,Brick>=new Map<string,Brick>();    //discards order. SHOULD use bricks[]
     public mapParts:Map<string,Part>=new Map<string,Part>();
     public mapAuthors:Map<string,Author>=new Map<string,Author>();
+	public base_url:string="./project/";
 
 
     public getBrickByName(id:string):Brick{

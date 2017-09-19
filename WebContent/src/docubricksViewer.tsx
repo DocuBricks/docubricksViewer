@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as Docubricks from "./docubricks";
 
-//State is never set so we use the 'undefined' type.
+//State is never set so we use the 'undefined' type. //rwb27: what does this comment refer to...??
 
 
 
@@ -493,10 +493,7 @@ export class Files extends React.Component<FilesProps, undefined> {
         }
 
         var projectid:string=getQueryStringValue("id");
-        var basedir:string="./project/";
-        if(projectid!=""){
-            basedir="./project/"+projectid+"/";
-        }
+        var basedir:string=proj.base_url;
         //var downloadlink="DownloadZip?id="+projectid;
 
         //Collect the files and images
