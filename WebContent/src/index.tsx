@@ -8,7 +8,7 @@ const request = require('browser-request');
 
 //alert(getQueryStringValue("id")); 
 
-try{
+if(document.getElementById("hiddendata")){
     var s= document.getElementById("hiddendata").textContent;
     document.getElementById("hiddendata").textContent="";
     var docu = Docubricks.docubricksFromJSON(s);
@@ -17,7 +17,8 @@ try{
         <DocubricksProject proj={docu}/>,
         document.getElementById("example")
     );
-}catch(e){
+}
+if(document.getElementById("docubricks_xml_url")){
     var f = document.getElementById("docubricks_xml_url").textContent;
     document.getElementById("docubricks_xml_url").textContent="";
 
@@ -32,5 +33,17 @@ try{
                 document.getElementById("example")
             );
         });
+    });
+}
+if(document.getElementById("docubricks_xml")){
+    var xmlstring = document.getElementById("docubricks_xml").textContent;
+    //document.getElementById("docubricks_xml").textContent="";
+    console.log("XML String");
+    console.log(xmlstring);
+    Docubricks.docubricksFromXML(xmlstring, function(docu){
+        ReactDOM.render(
+            <DocubricksProject proj={docu}/>,
+            document.getElementById("example")
+        );
     });
 }
