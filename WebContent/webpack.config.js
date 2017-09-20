@@ -1,5 +1,6 @@
 module.exports = {
     entry: "./src/index.tsx",
+    //entry: "./src/test_parser.ts",
     output: {
         filename: "viewerbundle.js",
         path: __dirname + "/"
