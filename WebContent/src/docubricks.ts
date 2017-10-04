@@ -33,10 +33,19 @@ class LoadableString extends string implements CopiableFromXML{
 }*/
 function attributeFromXML(attributeName: string, xml: Element, def: string|null = ""): string{
     let attr = xml.getAttribute(attributeName);
-    if(attr == null) attr = def;
-    if(typeof def === "string"){
-        return def;
+	if(typeof attr === "string"){
+		return attr; //if a string is found, return that.
+    }else if(typeof def === "string"){
+        return def; //if a reasonable default is given, use that.
     }else{
+		//otherwise, raise an error (for the moment, dump debug info as well)
+		console.log("Missing attribute '"+attributeName+"' in XML:");
+		console.log(xml);
+		console.log("attr:");
+		console.log(attr);
+		console.log("def:");
+		console.log(def);
+		console.log("typeof def:"+(typeof def));
         throw "Attribute "+attributeName+" is missing, but it is required.";
     }
 }
@@ -44,17 +53,38 @@ function idFromXML(xml: Element): string{
 	// convenience property to retrieve the id property of a tag
     return attributeFromXML("id", xml);
 }
-function tagFromXML(tag: string, xml: Element){
+function tagsFromXML(tag: string, xml: Element): Element[]{
+	// return immediate children of an object (i.e. one level down the DOM tree)
+	// which are of a specified tag type.  Surely there is a function for this
+	// already???
+	let elist: Element[] = [];
+	for(let i=0; i<xml.children.length; i++){
+		if(xml.children[i] instanceof Element){
+			if(xml.children[i].tagName == tag) elist.push(xml.children[i]);
+		}
+	}
+	return elist;
+}
+function tagFromXML(tag: string, xml: Element): Element{
     // return a given tag from an XML element, ensuring there is at most one of it.
-    let elist = xml.getElementsByTagName(tag); //retrieve nodes matching the given path
-    assert(elist.length <= 1, "Error: got multiple '"+tag+"' tags when <= 1 is required");
-    return elist[0];
+    //let elist = xml.children;//getElementsByTagName(tag); //retrieve nodes matching the given pathtry{
+	let elist = tagsFromXML(tag, xml);
+    if(elist.length == 1){
+        return elist[0];
+    }else if(elist.length == 0){
+		throw "There is no <"+tag+"> tag in the XML";
+	}else{
+        console.log("multiple "+tag+" tags in the following XML (not allowed)");
+        console.log(xml);
+		console.log(elist);
+        throw "Got multiple <"+tag+"> tags but exactly one is required.";
+    }
 }
 function arrayFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, xml: Element, allowEmpty: boolean=true): Array<T>{
     //Copy all XML tags with a given tag name ("key") into an array, converting each to the given type
-    let elist = xml.getElementsByTagName(tag); //retrieve nodes matching the given path
+    let elist = tagsFromXML(tag, xml); //retrieve the tags we want to turn into objects
     if(!allowEmpty) assert(elist.length > 0, "Error: couldn't find a node matching '"+tag+"'");
-    try{
+    //try{
         let objects = new Array<T>();
         for(let i=0; i<elist.length; i++){
             let o = new c();
@@ -62,21 +92,26 @@ function arrayFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, xm
             objects.push(o);
         }
         return objects;
-    }catch(e){
-        console.log("Error: couldn't load objects matching '"+tag+"' error: "+e);
-    }
+    //}catch(e){
+        //console.log("Error: couldn't load objects matching <'"+tag+"'> error: "+e);
+    //}
 }
 function objectFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, xml: Element, allowEmpty: boolean=true):T|null{
 	// restore XML tags to objects, given the constructor of a class that contains the tags.
     let objects = arrayFromXML(c, tag, xml, allowEmpty);
-    assert(objects.length <= 1, "Error: multiple nodes matched '"+tag+"' and at most one was required.");
-    if(objects.length == 1) return objects[0];
-    else return null;
+    if(objects.length == 1){
+		return objects[0];
+    }else if(objects.length == 0){
+		if(allowEmpty) return null;
+		else throw "There were no <"+tag+"> tags, and one is required.";
+	}else{
+		throw "There were multiple <"+tag+"> tags, and at most one is required.";
+	}
 }
 function stringArrayFromXML(tag: string, xml: Element, allowEmpty: boolean=true): Array<string>{
     // Return an array with the text values of all the tags of a given type
     // NB may have trouble if the text values are missing, or the XPath matches non-Element nodes
-    let elist = xml.getElementsByTagName(tag); //retrieve nodes matching the given path
+    let elist = tagsFromXML(tag, xml); //retrieve tags matching the given path
     if(!allowEmpty) assert(elist.length > 0, "Error: couldn't find a node matching '"+tag+"'");
     try{
         let strings = new Array<string>();
@@ -371,7 +406,7 @@ export class Part implements CopiableFromXML{
         this.id = idFromXML(xml);
         this.name = stringFromXML("name", xml);
         this.description = stringFromXML("description", xml);
-        if(this.name.length==0){
+        if(this.name == null || this.name.length==0){
             this.name = this.description;
         }
         this.supplier = stringFromXML("supplier", xml);
