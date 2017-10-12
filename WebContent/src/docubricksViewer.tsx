@@ -1,10 +1,16 @@
 import * as React from "react";
 import * as Docubricks from "./docubricks";
-
+//import renderHTML from 'react-render-html';
 //State is never set so we use the 'undefined' type. //rwb27: what does this comment refer to...??
 
 
-
+function renderHTMLFromString(htmlstring: string | Element){
+	if(typeof htmlstring === "string"){
+		return htmlstring;
+	}else if(htmlstring instanceof Element){
+		//
+	}
+}
 
 /**
  * Main component
@@ -363,7 +369,7 @@ export class InstructionList extends React.Component<InstructionListProps, undef
                  </nav>
                  <article className="text-col">
                      <b>Step {curstep}. </b>
-                     {step.description}
+                     {renderHTMLFromString(step.description)}
                  </article>
              </div>);
          const divclear = {clear:"both"};

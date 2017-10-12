@@ -12,8 +12,8 @@ interface CopiableFromXML {
 }
 function stringOfHTMLFromXML(tag: string, xml: Element, def: string|null=" "): string{
 	// retrieve the contents of a tag as a string, allowing HTML tags (for now, allows anything...?!)
-    let nodes = xml.getElementsByTagName(tag);
-    if(nodes.length == 0){
+    let elist = tagsFromXML(tag, xml);
+    if(elist.length == 0){
 		// if the element is missing, return the default value if present, or throw an error.
         if(def != null){
             return def;
@@ -21,9 +21,9 @@ function stringOfHTMLFromXML(tag: string, xml: Element, def: string|null=" "): s
             throw(Error("Error: there was no '"+tag+"' tag, and one is required."));
         }
     }
-    assert(nodes.length == 1, "Got multiple elements matching '"+tag+"' but exactly 1 was required.");
-    let node = nodes[0];
-    return node.innerHTML;
+    if(elist.length > 1) throw "Got multiple elements matching '"+tag+"' but exactly 1 was required.";
+    let el = elist[0];
+    return el.innerHTML;
 }
 /*
 // it would be nice to handle strings in the same way as everything else - nice, but hard it seems!
@@ -444,12 +444,12 @@ export class StepByStepInstruction implements CopiableFromXML{
  * One assembly step (or any instruction step)
  */
 export class AssemblyStep implements CopiableFromXML{
-    public description: string;
+    public description: string | Element;
     public files: MediaFile[];
     public components: AssemblyStepComponent[];
 
     copyFromXML(xml:  Element): void{
-        this.description = stringFromXML("description", xml);
+        this.description = tagFromXML("description", xml);
         this.files = mediaFilesFromXML(xml);
         this.components = arrayFromXML(AssemblyStepComponent, "component", xml);
     }
