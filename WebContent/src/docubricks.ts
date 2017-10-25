@@ -644,16 +644,35 @@ export function docubricksFromJSON(s:string):Project{
     console.log("successfully created docubricks project ",realproj);
     return realproj;
 }
+export function docubricksFromDOM(xmldoc: Document):Project{
+    //Create a new project from an XML document (already parsed into a DOM)
+    let proj:Project=new Project();
 
+    //Copy bricks
+    proj.copyFromXML(xmldoc.documentElement);
+    console.log("successfully created docubricks project ",proj);
+
+    return proj
+}
 export function docubricksFromXML(s:string, callback: (p: Project)=>any ){
     let xmldoc = new DOMParser().parseFromString(s, "application/xml");
-    var proj:Project=new Project();
+    let proj:Project=new Project();
 
     //Copy bricks
     proj.copyFromXML(xmldoc.documentElement);
     console.log("successfully created docubricks project ",proj);
 
     callback(proj); //I really hate JS callbacks :(
+}
+export function docubricksFromXMLSync(s:string): Project{
+    let xmldoc = new DOMParser().parseFromString(s, "application/xml");
+    let proj:Project=new Project();
+
+    //Copy bricks
+    proj.copyFromXML(xmldoc.documentElement);
+    console.log("successfully created docubricks project ",proj);
+
+    return proj; //I really hate JS callbacks :(
 }
 
 

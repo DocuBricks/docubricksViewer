@@ -69,3 +69,33 @@ if(document.getElementById("docubricks_xml")){
         );
     });
 }
+if(document.getElementById("docubricks_xml_iframe")){
+    console.log("Loading from iframe");
+    let iframe = document.getElementById("docubricks_xml_iframe") as HTMLIFrameElement;
+    let xmldoc = iframe.contentDocument || iframe.contentWindow.document;
+    console.log(xmldoc);
+    let docu = Docubricks.docubricksFromDOM(xmldoc);
+    ReactDOM.render(
+            <DocubricksProject proj={docu}/>,
+            document.getElementById("example")
+        );
+}
+function loadDocumentFromFileInput(){
+    var fileinput = document.getElementById("docubricks_xml_file_input") as HTMLInputElement;
+    console.log("Loading file from file input control.");
+    if("files" in fileinput){
+        if(fileinput.files.length > 0){
+            let file = fileinput.files[0];
+            console.log("Reading file: "+file.name);
+            let reader = new FileReader();
+            reader.onload = function(){
+                let docu = Docubricks.docubricksFromXMLSync(reader.result);
+                ReactDOM.render(
+                    <DocubricksProject proj={docu}/>,
+                    document.getElementById("example")
+                );   
+            }
+            reader.readAsText(file);
+        }
+    }
+}

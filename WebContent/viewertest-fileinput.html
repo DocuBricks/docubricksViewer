@@ -8,10 +8,6 @@
     </head>
 
     <body>
-        <div id="example">
-          <h1 id="loading-text">Loading...</h1>
-        </div>
-        <iframe id="docubricks_xml_iframe" src="./openflexure%20microscope.docubricks.xml" />
 
         <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -21,6 +17,10 @@
         <script src="./node_modules/react-dom/dist/react-dom.js"></script>
         <script src="./viewerbundle.js"></script>
 
+        <div id="example">
+            <input type="file" id="docubricks_xml_file_input" multiple size="1" onchange="loadDocumentFromFileInput()">
+        </div>
+        
         <script>
 
     	    lightbox.option({
