@@ -367,10 +367,7 @@ export class InstructionList extends React.Component<InstructionListProps, undef
                  <nav className="image-col">
                      <Files proj={proj} files={step.files} basekey={stepkey}/>
                  </nav>
-                 <article className="text-col">
-                     <b>Step {curstep}. </b>
-                     {renderHTMLFromString(step.description)}
-                 </article>
+                 <InstructionStep listKey={key} stepIndex={curstep} step={step}/>
              </div>);
          const divclear = {clear:"both"};
          snodes.push(<div key={stepkey+"_end"} style={divclear}/>);
@@ -387,9 +384,76 @@ export class InstructionList extends React.Component<InstructionListProps, undef
  }
 }
 
+function domNodeToReactElement(domNode: Element): JSX.Element | string{
+	if(domNode.nodeType == 3){
+		return domNode.nodeValue;
+	}else if(domNode.nodeType == 1){
+		return React.createElement(domNode.nodeName, domNodeChildrenToReactElements(domNode));
+	}
+}
 
+function domNodeChildrenToReactElements(domNode: Element): Array<JSX.Element|string>{
+	let nodes: Array<JSX.Element|string> = [];
+	for(let i=0; i<domNode.childNodes.length; i++){
+		let childNode = domNode.childNodes[i];
+		if(childNode.nodeType == 3){
+			//we have a text node, so push it into the list as a string
+			nodes.push(childNode.nodeValue);
+		}else if(childNode.nodeType == 1){
+			//we have an XML Element
+			let allowedTags = ["b","i","ul","ol","li","p","a"];
+			if(allowedTags.indexOf(childNode.nodeName) >= 0){
+				nodes.push(
+					React.createElement(childNode.nodeName, childNode.attributes, 
+										domNodeChildrenToReactElements(childNode as Element)));
+			}else if(childNode.nodeName=="br"){
+				nodes.push(<br/>);
+			}
+		}
+	}
+	return nodes;
+}
 
+export interface InstructionStepProps
+{listKey: string; stepIndex: number; step: Docubricks.AssemblyStep;}
+export class InstructionStep extends React.Component<InstructionStepProps, undefined> {
+	render(){
+		let step: Docubricks.AssemblyStep = this.props.step;
+		let stepIndex: number = this.props.stepIndex;
+		let listKey: string = this.props.listKey;
+		if(typeof(step.description) == "string"){
+			return <article className="text-col">
+                     <b>Step {stepIndex}. </b>
+						 {step.description}
+                 </article>;
+		}else{ //for some reason typeguarding using instanceof doesn't work here...
+			return <article className="text-col">
+                     <b>Step {stepIndex}. </b>
+						 {domNodeChildrenToReactElements(step.description)}
+                 </article>;
+		}
+	}
+}
 
+/*
+export interface BasicHTMLElementProps
+{domElement: Element;}
+export class BasicInnerHTML extends React.Component<BasicInnerHTMLProps, undefined> {
+	// This React class renders the contents of an HTML DOM element, assuming they are safe.
+	render(){
+		let domElement: Element = this.props.domElement;
+		let mnodes:JSX.Element[]=[];
+		for(let i=0; i<domElement.childNodes.length; i++){
+			let node = domElement.childNodes[i];
+			if(node.nodeType == 3){
+				//we have a text node
+				mnodes.push(node.nodeValue);
+			}
+		}
+		return mnodes;
+	}
+}
+*/
 
 
 /**
