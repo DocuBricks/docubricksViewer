@@ -392,6 +392,10 @@ function domNodeToReactElement(domNode: Element): JSX.Element | string{
 	}
 }
 
+interface AttributeDictionary{
+	[key: string]: string;
+}
+
 function domNodeChildrenToReactElements(domNode: Element): Array<JSX.Element|string>{
 	let nodes: Array<JSX.Element|string> = [];
 	for(let i=0; i<domNode.childNodes.length; i++){
@@ -403,8 +407,13 @@ function domNodeChildrenToReactElements(domNode: Element): Array<JSX.Element|str
 			//we have an XML Element
 			let allowedTags = ["b","i","ul","ol","li","p","a"];
 			if(allowedTags.indexOf(childNode.nodeName) >= 0){
+				let attributes: AttributeDictionary = {};
+				for(let j=0; j<childNode.attributes.length; j++){
+					let attrNode = childNode.attributes[j];
+					attributes[attrNode.nodeName] = attrNode.nodeValue;
+				}
 				nodes.push(
-					React.createElement(childNode.nodeName, childNode.attributes, 
+					React.createElement(childNode.nodeName, attributes, 
 										domNodeChildrenToReactElements(childNode as Element)));
 			}else if(childNode.nodeName=="br"){
 				nodes.push(<br/>);
