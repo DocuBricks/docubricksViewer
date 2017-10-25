@@ -178,20 +178,20 @@ export class Brick extends React.Component<BrickProps, undefined> {
        };
 
      var mnodes:JSX.Element[]=[];
-     var addField=function(name:string,value:string):void{
+     var addField=function(name:string,value:string|Array<JSX.Element|string>):void{
          if(value!="")
              mnodes.push(<p key={brickkey+"_"+name}><b>{name}: </b>{value}</p>);
      }
 
      if (typeof brick.abstract != 'undefined'){
-       addField("Abstract", brick.abstract);
+       addField("Abstract", renderDescription(brick.abstract));
      }
-     addField("Description",brick.long_description);
-     mnodes.push(<p key={brickkey+"_brickabstract"} >{brick.abstract}</p>);
+     addField("Description",renderDescription(brick.long_description));
+     mnodes.push(<p key={brickkey+"_brickabstract"} >{renderDescription(brick.abstract)}</p>);
      mnodes.push(<Files key={brickkey+"_files"} proj={proj} files={brick.files} basekey={brickkey}/>);
 
      addField("License",brick.license);
-     addField("Notes",brick.notes);
+     addField("Notes",renderDescription(brick.notes));
 
      //Authors
      if(brick.authors.length!=0){
@@ -396,6 +396,14 @@ interface AttributeDictionary{
 	[key: string]: string;
 }
 
+function renderDescription(description: string | Element): Array<JSX.Element | string> | string{
+	if(typeof(description) == "string"){
+		return description;
+	}else{
+		return domNodeChildrenToReactElements(description);
+	}
+}
+
 function domNodeChildrenToReactElements(domNode: Element): Array<JSX.Element|string>{
 	let nodes: Array<JSX.Element|string> = [];
 	for(let i=0; i<domNode.childNodes.length; i++){
@@ -430,39 +438,12 @@ export class InstructionStep extends React.Component<InstructionStepProps, undef
 		let step: Docubricks.AssemblyStep = this.props.step;
 		let stepIndex: number = this.props.stepIndex;
 		let listKey: string = this.props.listKey;
-		if(typeof(step.description) == "string"){
-			return <article className="text-col">
-                     <b>Step {stepIndex}. </b>
-						 {step.description}
-                 </article>;
-		}else{ //for some reason typeguarding using instanceof doesn't work here...
-			return <article className="text-col">
-                     <b>Step {stepIndex}. </b>
-						 {domNodeChildrenToReactElements(step.description)}
-                 </article>;
-		}
+		return <article className="text-col">
+				 <b>Step {stepIndex}. </b>
+				 {renderDescription(step.description)}
+			   </article>;
 	}
 }
-
-/*
-export interface BasicHTMLElementProps
-{domElement: Element;}
-export class BasicInnerHTML extends React.Component<BasicInnerHTMLProps, undefined> {
-	// This React class renders the contents of an HTML DOM element, assuming they are safe.
-	render(){
-		let domElement: Element = this.props.domElement;
-		let mnodes:JSX.Element[]=[];
-		for(let i=0; i<domElement.childNodes.length; i++){
-			let node = domElement.childNodes[i];
-			if(node.nodeType == 3){
-				//we have a text node
-				mnodes.push(node.nodeValue);
-			}
-		}
-		return mnodes;
-	}
-}
-*/
 
 
 /**

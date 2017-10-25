@@ -201,8 +201,8 @@ export class Brick implements CopiableFromXML{
     public id:string; //Secondary store    
     public name: string;
     public abstract: string;
-    public long_description: string;
-    public notes: string;
+    public long_description: string | Element;
+    public notes: string | Element;
     public license: string;
     public files: MediaFile[];
     public authors: string[]; //RWB27 changed this from [string] because the former implies only ever one author??
@@ -279,8 +279,8 @@ export class Brick implements CopiableFromXML{
         this.id = idFromXML(xml); //do I want to do this??
         this.name = stringFromXML("name", xml);
         this.abstract = stringFromXML("abstract", xml);
-        this.long_description = stringFromXML("long_description", xml);
-        this.notes = stringFromXML("notes", xml);
+        this.long_description = tagFromXML("long_description", xml);
+        this.notes = tagFromXML("notes", xml);
         this.license = stringFromXML("license", xml);
         this.authors = stringArrayFromXML("authors", xml);
         this.functions = arrayFromXML(BrickFunction, "function", xml);
