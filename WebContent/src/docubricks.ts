@@ -72,6 +72,8 @@ function tagFromXML(tag: string, xml: Element): Element{
     if(elist.length == 1){
         return elist[0];
     }else if(elist.length == 0){
+		console.log("Missing <"+tag+"> in XML element:");
+		console.log(xml);
 		throw "There is no <"+tag+"> tag in the XML";
 	}else{
         console.log("multiple "+tag+" tags in the following XML (not allowed)");
@@ -214,11 +216,11 @@ export class Brick implements CopiableFromXML{
     /**
      * Get BOM as only what this particular brick contains
      */
-    public getBom(proj:Project, recursive:boolean):Bom {
+    public getBom(proj:Project, recursive:boolean, recursionPrefix:string=""):Bom {
         var bom:Bom=new Bom();
 
-        console.log("functions");
-        console.log(this.functions);
+        //console.log("functions");
+        //console.log(this.functions);
         for(let func of this.mapFunctions.values()){
             func.implementations.forEach(function(imp:FunctionImplementation){
                 if(imp.isPart()){
@@ -227,7 +229,8 @@ export class Brick implements CopiableFromXML{
                     bom.addPart(p.id, imp.quantity);
                 } else if(imp.isBrick()){
                     if(recursive){
-                        var b:Bom=imp.getBrick(proj).getBom(proj,true);
+						let brick:Brick=imp.getBrick(proj);
+                        var b:Bom=brick.getBom(proj,true,recursionPrefix+">"+brick.name);
                         //bom.addBom(b,+func.quantity);                    
                         bom.addBom(b,imp.quantity);                    
                     }
@@ -236,7 +239,7 @@ export class Brick implements CopiableFromXML{
                 }
             });
         }
-        console.log("bom");
+        console.log("bom "+recursionPrefix);
         console.log(bom);
         return bom;
     }
@@ -354,7 +357,7 @@ export class FunctionImplementation implements CopiableFromXML{
         if(this.type=="physical_part"){
             this.type="part";
         }
-        this.quantity = Number(stringFromXML("quantity", xml));
+        this.quantity = Number(attributeFromXML("quantity", xml, "1"));
     }
 }
 

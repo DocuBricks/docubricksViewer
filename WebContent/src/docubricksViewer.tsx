@@ -472,7 +472,7 @@ render() {
 
             snodes.push(
                 <tr key={stepkey}>
-                    <td>{part.name}</td>
+                    <td><a href={"#part_"+part.id}>{part.name}</a></td>
                     <td>{quantity}</td>
                     <td>{part.supplier}</td>
                     <td>{part.supplier_part_num}</td>
