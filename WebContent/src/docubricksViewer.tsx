@@ -384,14 +384,6 @@ export class InstructionList extends React.Component<InstructionListProps, undef
  }
 }
 
-function domNodeToReactElement(domNode: Element): JSX.Element | string{
-	if(domNode.nodeType == 3){
-		return domNode.nodeValue;
-	}else if(domNode.nodeType == 1){
-		return React.createElement(domNode.nodeName, domNodeChildrenToReactElements(domNode));
-	}
-}
-
 interface AttributeDictionary{
 	[key: string]: string;
 }
@@ -413,7 +405,7 @@ function domNodeChildrenToReactElements(domNode: Element): Array<JSX.Element|str
 			nodes.push(childNode.nodeValue);
 		}else if(childNode.nodeType == 1){
 			//we have an XML Element
-			let allowedTags = ["b","i","ul","ol","li","p","a"];
+			let allowedTags = ["b","i","ul","ol","li","p","a","pre","code"];
 			if(allowedTags.indexOf(childNode.nodeName) >= 0){
 				let attributes: AttributeDictionary = {};
 				for(let j=0; j<childNode.attributes.length; j++){
