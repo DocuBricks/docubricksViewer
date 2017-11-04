@@ -1,10 +1,16 @@
 import * as React from "react";
 import * as Docubricks from "./docubricks";
+//import renderHTML from 'react-render-html';
+//State is never set so we use the 'undefined' type. //rwb27: what does this comment refer to...??
 
-//State is never set so we use the 'undefined' type.
 
-
-
+function renderHTMLFromString(htmlstring: string | Element){
+	if(typeof htmlstring === "string"){
+		return htmlstring;
+	}else if(htmlstring instanceof Element){
+		//
+	}
+}
 
 /**
  * Main component
@@ -172,20 +178,20 @@ export class Brick extends React.Component<BrickProps, undefined> {
        };
 
      var mnodes:JSX.Element[]=[];
-     var addField=function(name:string,value:string):void{
+     var addField=function(name:string,value:string|Array<JSX.Element|string>):void{
          if(value!="")
              mnodes.push(<p key={brickkey+"_"+name}><b>{name}: </b>{value}</p>);
      }
 
      if (typeof brick.abstract != 'undefined'){
-       addField("Abstract", brick.abstract);
+       addField("Abstract", renderDescription(brick.abstract));
      }
-     addField("Description",brick.long_description);
-     mnodes.push(<p key={brickkey+"_brickabstract"} >{brick.abstract}</p>);
+     addField("Description",renderDescription(brick.long_description));
+     mnodes.push(<p key={brickkey+"_brickabstract"} >{renderDescription(brick.abstract)}</p>);
      mnodes.push(<Files key={brickkey+"_files"} proj={proj} files={brick.files} basekey={brickkey}/>);
 
      addField("License",brick.license);
-     addField("Notes",brick.notes);
+     addField("Notes",renderDescription(brick.notes));
 
      //Authors
      if(brick.authors.length!=0){
@@ -361,10 +367,7 @@ export class InstructionList extends React.Component<InstructionListProps, undef
                  <nav className="image-col">
                      <Files proj={proj} files={step.files} basekey={stepkey}/>
                  </nav>
-                 <article className="text-col">
-                     <b>Step {curstep}. </b>
-                     {step.description}
-                 </article>
+                 <InstructionStep listKey={key} stepIndex={curstep} step={step}/>
              </div>);
          const divclear = {clear:"both"};
          snodes.push(<div key={stepkey+"_end"} style={divclear}/>);
@@ -381,9 +384,58 @@ export class InstructionList extends React.Component<InstructionListProps, undef
  }
 }
 
+interface AttributeDictionary{
+	[key: string]: string;
+}
 
+function renderDescription(description: string | Element): Array<JSX.Element | string> | string{
+	if(typeof(description) == "string"){
+		return description;
+	}else{
+		return domNodeChildrenToReactElements(description);
+	}
+}
 
+function domNodeChildrenToReactElements(domNode: Element): Array<JSX.Element|string>{
+	let nodes: Array<JSX.Element|string> = [];
+	for(let i=0; i<domNode.childNodes.length; i++){
+		let childNode = domNode.childNodes[i];
+		if(childNode.nodeType == 3){
+			//we have a text node, so push it into the list as a string
+			nodes.push(childNode.nodeValue);
+		}else if(childNode.nodeType == 1){
+			//we have an XML Element
+			let allowedTags = ["b","i","ul","ol","li","p","a","pre","code"];
+			if(allowedTags.indexOf(childNode.nodeName) >= 0){
+				let attributes: AttributeDictionary = {};
+				for(let j=0; j<childNode.attributes.length; j++){
+					let attrNode = childNode.attributes[j];
+					attributes[attrNode.nodeName] = attrNode.nodeValue;
+				}
+				nodes.push(
+					React.createElement(childNode.nodeName, attributes, 
+										domNodeChildrenToReactElements(childNode as Element)));
+			}else if(childNode.nodeName=="br"){
+				nodes.push(<br/>);
+			}
+		}
+	}
+	return nodes;
+}
 
+export interface InstructionStepProps
+{listKey: string; stepIndex: number; step: Docubricks.AssemblyStep;}
+export class InstructionStep extends React.Component<InstructionStepProps, undefined> {
+	render(){
+		let step: Docubricks.AssemblyStep = this.props.step;
+		let stepIndex: number = this.props.stepIndex;
+		let listKey: string = this.props.listKey;
+		return <article className="text-col">
+				 <b>Step {stepIndex}. </b>
+				 {renderDescription(step.description)}
+			   </article>;
+	}
+}
 
 
 /**
@@ -412,7 +464,7 @@ render() {
 
             snodes.push(
                 <tr key={stepkey}>
-                    <td>{part.name}</td>
+                    <td><a href={"#part_"+part.id}>{part.name}</a></td>
                     <td>{quantity}</td>
                     <td>{part.supplier}</td>
                     <td>{part.supplier_part_num}</td>
@@ -493,10 +545,7 @@ export class Files extends React.Component<FilesProps, undefined> {
         }
 
         var projectid:string=getQueryStringValue("id");
-        var basedir:string="./project/";
-        if(projectid!=""){
-            basedir="./project/"+projectid+"/";
-        }
+        var basedir:string=proj.base_url;
         //var downloadlink="DownloadZip?id="+projectid;
 
         //Collect the files and images

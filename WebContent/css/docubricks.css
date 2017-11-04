@@ -86,7 +86,7 @@ body {
   }
 }
 
-ul {
+#sidebar ul {
   list-style-type: none;
 }
 
@@ -179,13 +179,22 @@ th {
     a[href]:after {
       content: none !important;
     }
+	
+	a[href] {
+		color:navy;
+		text-decoration:underline;
+	}
 
     #main-content {
       width: 100%;
     }
+	
+	#partstart {
+		page-break-before:always;
+	}
 
     .brickdiv {
-      page-break-before:avoid;
+      page-break-before:always;
       page-break-after:avoid;
     }
 

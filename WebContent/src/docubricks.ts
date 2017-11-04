@@ -1,6 +1,142 @@
 /**
+ * Deserialisation from XML
+ * 
+ * The following methods tidy up the common code required to create objects from their XML representation.
+ */
+//const xml2js = require("xml2js"); //rwb27: tried adding XML import
+const assert = require("assert");
+
+interface CopiableFromXML {
+	// All the DocuBricks types should implement this so they can be reconstituted from XML
+    copyFromXML(xml: Element): void;
+}
+function stringOfHTMLFromXML(tag: string, xml: Element, def: string|null=" "): string{
+	// retrieve the contents of a tag as a string, allowing HTML tags (for now, allows anything...?!)
+    let elist = tagsFromXML(tag, xml);
+    if(elist.length == 0){
+		// if the element is missing, return the default value if present, or throw an error.
+        if(def != null){
+            return def;
+        }else{
+            throw(Error("Error: there was no '"+tag+"' tag, and one is required."));
+        }
+    }
+    if(elist.length > 1) throw "Got multiple elements matching '"+tag+"' but exactly 1 was required.";
+    let el = elist[0];
+    return el.innerHTML;
+}
+/*
+// it would be nice to handle strings in the same way as everything else - nice, but hard it seems!
+class LoadableString extends string implements CopiableFromXML{
+    copyFromXML(xml: XMLelement): void{
+        
+}*/
+function attributeFromXML(attributeName: string, xml: Element, def: string|null = ""): string{
+    let attr = xml.getAttribute(attributeName);
+	if(typeof attr === "string"){
+		return attr; //if a string is found, return that.
+    }else if(typeof def === "string"){
+        return def; //if a reasonable default is given, use that.
+    }else{
+		//otherwise, raise an error (for the moment, dump debug info as well)
+		console.log("Missing attribute '"+attributeName+"' in XML:");
+		console.log(xml);
+		console.log("attr:");
+		console.log(attr);
+		console.log("def:");
+		console.log(def);
+		console.log("typeof def:"+(typeof def));
+        throw "Attribute "+attributeName+" is missing, but it is required.";
+    }
+}
+function idFromXML(xml: Element): string{
+	// convenience property to retrieve the id property of a tag
+    return attributeFromXML("id", xml);
+}
+function tagsFromXML(tag: string, xml: Element): Element[]{
+	// return immediate children of an object (i.e. one level down the DOM tree)
+	// which are of a specified tag type.  Surely there is a function for this
+	// already???
+	let elist: Element[] = [];
+	for(let i=0; i<xml.children.length; i++){
+		if(xml.children[i] instanceof Element){
+			if(xml.children[i].tagName == tag) elist.push(xml.children[i]);
+		}
+	}
+	return elist;
+}
+function tagFromXML(tag: string, xml: Element): Element{
+    // return a given tag from an XML element, ensuring there is at most one of it.
+    //let elist = xml.children;//getElementsByTagName(tag); //retrieve nodes matching the given pathtry{
+	let elist = tagsFromXML(tag, xml);
+    if(elist.length == 1){
+        return elist[0];
+    }else if(elist.length == 0){
+		console.log("Missing <"+tag+"> in XML element:");
+		console.log(xml);
+		throw "There is no <"+tag+"> tag in the XML";
+	}else{
+        console.log("multiple "+tag+" tags in the following XML (not allowed)");
+        console.log(xml);
+		console.log(elist);
+        throw "Got multiple <"+tag+"> tags but exactly one is required.";
+    }
+}
+function arrayFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, xml: Element, allowEmpty: boolean=true): Array<T>{
+    //Copy all XML tags with a given tag name ("key") into an array, converting each to the given type
+    let elist = tagsFromXML(tag, xml); //retrieve the tags we want to turn into objects
+    if(!allowEmpty) assert(elist.length > 0, "Error: couldn't find a node matching '"+tag+"'");
+    //try{
+        let objects = new Array<T>();
+        for(let i=0; i<elist.length; i++){
+            let o = new c();
+            o.copyFromXML(elist[i]);
+            objects.push(o);
+        }
+        return objects;
+    //}catch(e){
+        //console.log("Error: couldn't load objects matching <'"+tag+"'> error: "+e);
+    //}
+}
+function objectFromXML<T extends CopiableFromXML>(c: new () => T, tag: string, xml: Element, allowEmpty: boolean=true):T|null{
+	// restore XML tags to objects, given the constructor of a class that contains the tags.
+    let objects = arrayFromXML(c, tag, xml, allowEmpty);
+    if(objects.length == 1){
+		return objects[0];
+    }else if(objects.length == 0){
+		if(allowEmpty) return null;
+		else throw "There were no <"+tag+"> tags, and one is required.";
+	}else{
+		throw "There were multiple <"+tag+"> tags, and at most one is required.";
+	}
+}
+function stringArrayFromXML(tag: string, xml: Element, allowEmpty: boolean=true): Array<string>{
+    // Return an array with the text values of all the tags of a given type
+    // NB may have trouble if the text values are missing, or the XPath matches non-Element nodes
+    let elist = tagsFromXML(tag, xml); //retrieve tags matching the given path
+    if(!allowEmpty) assert(elist.length > 0, "Error: couldn't find a node matching '"+tag+"'");
+    try{
+        let strings = new Array<string>();
+        for(let i=0; i<elist.length; i++){
+            strings.push(elist[i].textContent);
+        }
+        return strings;
+    }catch(e){
+        console.log("Missing property: "+tag+" error: "+e);
+    }
+}
+function stringFromXML(tag: string, xml: Element, allowEmpty: boolean=true): string{
+    // Return the text stored in a given tag (specified by the tag), checking there's only one tag.
+    let objects = stringArrayFromXML(tag, xml, allowEmpty);
+    assert(objects.length <= 1, "Error: multiple nodes matched '"+tag+"' and at most one was required.");
+    if(objects.length == 1) return objects[0];
+    else return null;
+}
+
+/**
  * Bill of materials
  */
+
 export class Bom {
     public bom: Map<string,number>=new Map<string,number>();  //part-id
 
@@ -37,7 +173,7 @@ export class Bom {
 /**
  * One author
  */
-export class Author {
+export class Author implements CopiableFromXML{
     public id: string; //Secondary copy
     
     public name: string;
@@ -51,22 +187,28 @@ export class Author {
     copyfrom(o:Author):void{
         Object.assign(this,o);
     }
-
+    copyFromXML(xml:  Element): void{
+        this.id = idFromXML(xml); //do I want to do this??
+        this.name = stringFromXML("name", xml);
+        this.email = stringFromXML("email", xml);
+        this.orcid = stringFromXML("orcid", xml);
+        this.affiliation = stringFromXML("affiliation", xml);
+    }
 }
 
 /**
  * One brick
  */
-export class Brick {
+export class Brick implements CopiableFromXML{
     public id:string; //Secondary store    
     public name: string;
     public abstract: string;
-    public long_description: string;
-    public notes: string;
+    public long_description: string | Element;
+    public notes: string | Element;
     public license: string;
     public files: MediaFile[];
-    public authors: [string];
-    public functions: [BrickFunction];  //should not be used after import
+    public authors: string[]; //RWB27 changed this from [string] because the former implies only ever one author??
+    public functions: BrickFunction[];  //should not be used after import //changed from [bf] by rwb27
     public mapFunctions:Map<string,BrickFunction>=new Map<string,BrickFunction>();
     public instructions: StepByStepInstruction[];
 
@@ -74,11 +216,11 @@ export class Brick {
     /**
      * Get BOM as only what this particular brick contains
      */
-    public getBom(proj:Project, recursive:boolean):Bom {
+    public getBom(proj:Project, recursive:boolean, recursionPrefix:string=""):Bom {
         var bom:Bom=new Bom();
 
-        console.log("functions");
-        console.log(this.functions);
+        //console.log("functions");
+        //console.log(this.functions);
         for(let func of this.mapFunctions.values()){
             func.implementations.forEach(function(imp:FunctionImplementation){
                 if(imp.isPart()){
@@ -87,7 +229,8 @@ export class Brick {
                     bom.addPart(p.id, imp.quantity);
                 } else if(imp.isBrick()){
                     if(recursive){
-                        var b:Bom=imp.getBrick(proj).getBom(proj,true);
+						let brick:Brick=imp.getBrick(proj);
+                        var b:Bom=brick.getBom(proj,true,recursionPrefix+">"+brick.name);
                         //bom.addBom(b,+func.quantity);                    
                         bom.addBom(b,imp.quantity);                    
                     }
@@ -96,7 +239,7 @@ export class Brick {
                 }
             });
         }
-        console.log("bom");
+        console.log("bom "+recursionPrefix);
         console.log(bom);
         return bom;
     }
@@ -135,12 +278,28 @@ export class Brick {
         });
     }
 
+    copyFromXML(xml:  Element): void{
+        this.id = idFromXML(xml); //do I want to do this??
+        this.name = stringFromXML("name", xml);
+        this.abstract = stringFromXML("abstract", xml);
+        this.long_description = tagFromXML("long_description", xml);
+        this.notes = tagFromXML("notes", xml);
+        this.license = stringFromXML("license", xml);
+        this.authors = stringArrayFromXML("authors", xml);
+        this.functions = arrayFromXML(BrickFunction, "function", xml);
+        this.instructions = arrayFromXML(StepByStepInstruction, "assembly_instruction", xml);
+        this.files = mediaFilesFromXML(xml);
+        for(let i in this.functions){
+            this.mapFunctions.set(""+i, this.functions[i]);
+        }
+    }
+
 }
 
 /**
  * One function for a brick
  */
-export class BrickFunction {
+export class BrickFunction implements CopiableFromXML{
     public id: string;
 
     public description: string;
@@ -158,9 +317,16 @@ export class BrickFunction {
             this.implementations.push(f);
         });
     }
+    copyFromXML(xml:  Element): void{
+        this.id = idFromXML(xml); //do I want to do this??
+        this.description = stringFromXML("description", xml);
+        this.designator = stringFromXML("designator", xml);
+        this.quantity = stringFromXML("quantity", xml);
+        this.implementations = arrayFromXML(FunctionImplementation, "implementation", xml);
+    }
 }
 
-export class FunctionImplementation {
+export class FunctionImplementation implements CopiableFromXML{
     public type: string; //"part" or "brick"
     public id: string;
     public quantity: number;
@@ -184,19 +350,41 @@ export class FunctionImplementation {
         this.quantity=oi.quantity;
         this.type=oi.type;*/
     }
+
+    copyFromXML(xml:  Element): void{
+        this.id = idFromXML(xml); //do I want to do this??
+        this.type = attributeFromXML("type", xml, null);
+        if(this.type=="physical_part"){
+            this.type="part";
+        }
+        this.quantity = Number(attributeFromXML("quantity", xml, "1"));
+    }
 }
 
 /**
  * One associated file
  */
-export class MediaFile {
+export class MediaFile implements CopiableFromXML{
     public url: string;
+    copyFromXML(xml:  Element): void{
+        this.url = attributeFromXML("url", xml, null);
+    }
+}
+function mediaFilesFromXML(xml:  Element): MediaFile[]{
+    //convenience function for populating files lists from  Element
+    let media = tagFromXML("media", xml);
+    //return [];
+    //try{
+        return arrayFromXML(MediaFile, "file", media as  Element);
+    //}catch(e){
+    //    return [];
+    //}
 }
 
 /**
  * One part
  */
-export class Part {
+export class Part implements CopiableFromXML{
     public id: string; //secondary
     
     public name: string;
@@ -217,31 +405,70 @@ export class Part {
     copyfrom(o:Part):void{
         Object.assign(this,o);
     }
+    copyFromXML(xml:  Element): void{
+        this.id = idFromXML(xml);
+        this.name = stringFromXML("name", xml);
+        this.description = stringFromXML("description", xml);
+        if(this.name == null || this.name.length==0){
+            this.name = this.description;
+        }
+        this.supplier = stringFromXML("supplier", xml);
+        this.supplier_part_num = stringFromXML("supplier_part_num", xml);
+        this.manufacturer_part_num = stringFromXML("manufacturer_part_num", xml);
+        this.url = stringFromXML("url", xml);
+        this.material_amount = stringFromXML("material_amount", xml);
+        this.material_unit = stringFromXML("material_unit", xml);
+        this.files = mediaFilesFromXML(xml);
+        this.manufacturing_instruction = objectFromXML(StepByStepInstruction, "manufacturing_instruction", xml);
+    }
 }
 
 /**
  * One step-by-step instruction
  */
-export class StepByStepInstruction {
+export class StepByStepInstruction implements CopiableFromXML{
     public name: string;
     public steps: AssemblyStep[];
+
+    copyFromXML(xml:  Element): void{
+        this.name = attributeFromXML("name", xml);
+        this.steps = arrayFromXML(AssemblyStep, "step", xml); //load correctly from XML file
+        //this.steps = [{components:[], description:"test step", files:[]}];//this works (untyped objects)
+        
+        /*let teststep = new AssemblyStep();
+        teststep.files = [];
+        teststep.components = [];
+        teststep.description = "test step with correct type";
+        this.steps = [teststep];//arrayFromXML(AssemblyStep, "step", xml);*/
+    }
 }
 
 /**
  * One assembly step (or any instruction step)
  */
-export class AssemblyStep {
-    public description: string;
+export class AssemblyStep implements CopiableFromXML{
+    public description: string | Element;
     public files: MediaFile[];
     public components: AssemblyStepComponent[];
+
+    copyFromXML(xml:  Element): void{
+        this.description = tagFromXML("description", xml);
+        this.files = mediaFilesFromXML(xml);
+        this.components = arrayFromXML(AssemblyStepComponent, "component", xml);
+    }
 }
 
 /**
  * reference - to be removed?
  */
-export class AssemblyStepComponent {
+export class AssemblyStepComponent implements CopiableFromXML{
     public quantity: string;
     public id: string;
+
+    copyFromXML(xml:  Element): void{
+        this.quantity = stringFromXML("quantity", xml);
+        this.id = idFromXML(xml);
+    }
 }
 
 
@@ -256,13 +483,14 @@ export class BrickTree{
 /**
  * One docubricks project
  */
-export class Project {
+export class Project implements CopiableFromXML{
     public bricks:Brick[]=[];
     public parts:Part[]=[];
     public authors:Author[]=[];
 //    public mapBricks:Map<string,Brick>=new Map<string,Brick>();    //discards order. SHOULD use bricks[]
     public mapParts:Map<string,Part>=new Map<string,Part>();
     public mapAuthors:Map<string,Author>=new Map<string,Author>();
+	public base_url:string="./project/";
 
 
     public getBrickByName(id:string):Brick{
@@ -281,6 +509,9 @@ export class Project {
     }
     
     public getPartByName(id:string):Part{
+        if(this.mapParts.get(id) == null){
+            console.log("BAD PART ID: "+id);
+        }
         return this.mapParts.get(id);
     }
     
@@ -374,6 +605,22 @@ export class Project {
         
         
     }
+    public copyFromXML(xml:  Element): void{
+        console.log("Parsing bricks");
+        this.bricks = arrayFromXML(Brick, "brick", xml);
+        console.log("Parsing parts");
+        this.parts = arrayFromXML(Part, "physical_part", xml);
+        console.log("Parsing authors");
+        this.authors = arrayFromXML(Author, "author", xml);
+        console.log("Parsed project, building maps...");
+        for(let p of this.parts){
+            this.mapParts.set(p.id,p);
+        }
+        for(let a of this.authors){
+            this.mapAuthors.set(a.id,a);
+        }
+        console.log("Project successfully reconstructed from XML")
+    }
 
     /**
      * Get the name of the project - use the name of the root brick
@@ -397,5 +644,41 @@ export function docubricksFromJSON(s:string):Project{
 
     var realproj:Project=new Project();
     realproj.copyfrom(proj);
+    console.log("successfully created docubricks project ",realproj);
     return realproj;
 }
+export function docubricksFromDOM(xmldoc: Document):Project{
+    //Create a new project from an XML document (already parsed into a DOM)
+    let proj:Project=new Project();
+
+    //Copy bricks
+    proj.copyFromXML(xmldoc.documentElement);
+    console.log("successfully created docubricks project ",proj);
+
+    return proj
+}
+export function docubricksFromXML(s:string, callback: (p: Project)=>any ){
+    let xmldoc = new DOMParser().parseFromString(s, "application/xml");
+    let proj:Project=new Project();
+
+    //Copy bricks
+    proj.copyFromXML(xmldoc.documentElement);
+    console.log("successfully created docubricks project ",proj);
+
+    callback(proj); //I really hate JS callbacks :(
+}
+export function docubricksFromXMLSync(s:string): Project{
+    let xmldoc = new DOMParser().parseFromString(s, "application/xml");
+    let proj:Project=new Project();
+
+    //Copy bricks
+    proj.copyFromXML(xmldoc.documentElement);
+    console.log("successfully created docubricks project ",proj);
+
+    return proj; //I really hate JS callbacks :(
+}
+
+
+
+// WEBPACK FOOTER //
+// ./src/docubricks.ts
