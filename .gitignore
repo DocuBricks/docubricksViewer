@@ -1,0 +1,5 @@
+WebContent/node_modules/*
+WebContent/viewerbundle.*
+WebContent/src/*.js*
+WebContent/project/
+WebContent/project_old/
