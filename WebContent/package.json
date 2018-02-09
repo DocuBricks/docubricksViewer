@@ -4,16 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack-dev-server --host 0.0.0.0 --port 8080",
+    "bundle": "webpack"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^9.4.2",
     "@types/react": "^15.0.16",
     "@types/react-dom": "^0.14.23",
+    "browser-request": "^0.3.3",
     "lightbox2": "^2.9.0",
     "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "require": "^2.4.20",
+    "webpack-dev-server": "^2.11.1"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^3.1.2",
